@@ -1,0 +1,64 @@
+package tp.locomovil.persistence;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+import tp.locomovil.inter.ScanDAO;
+import tp.locomovil.model.Scan;
+
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Repository
+public class ScanJDBCDAO implements ScanDAO { // TODO interface
+
+	private JdbcTemplate jdbcTemplate;
+	private final SimpleJdbcInsert jdbcInsert;
+
+	private final static RowMapper<Scan> ROW_MAPPER = new RowMapper<Scan>() {
+		public Scan mapRow (ResultSet rs, int rowNum) throws SQLException {
+			return null;
+		}
+	};
+
+	@Autowired
+	public ScanJDBCDAO (DataSource ds) {
+		jdbcTemplate = new JdbcTemplate(ds);
+		jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+						.withTableName("scans")
+						.usingGeneratedKeyColumns("wifi_scan_id");
+	}
+
+	public int saveScan(Scan scan) {
+		final Map<String, Object> args = new HashMap<String, Object>();
+		args.put("latitude", scan.getLatitude());
+		args.put("longitude", scan.getLongitude());
+		args.put("altitude", scan.getAltitude());
+		args.put("location_res", scan.getLocationResolution());
+		args.put("geomag_x", scan.getGeomagneticX());
+		args.put("geomag_y", scan.getGeomagneticY());
+		args.put("geomag_z", scan.getGeomagneticZ());
+		args.put("geomag_res", scan.getGeomagneticResolution());
+		args.put("accel_x", scan.getAccelerationX());
+		args.put("accel_y", scan.getAccelerationY());
+		args.put("accel_z", scan.getAccelerationZ());
+		args.put("accel_res", scan.getAccelerationResolution());
+		args.put("coord_x", scan.getUserCoordX());
+		args.put("coord_y", scan.getUserCoordY());
+		args.put("device_time", scan.getDeviceMillis());
+		args.put("ntp_time", scan.getNTPMillis());
+//		args.put("map_id", scan.getMapId());
+		args.put("map_id", 12341234);
+		args.put("rotation_matrix", scan.getRotationMatrix());
+
+		final Number wifiScanId = jdbcInsert.executeAndReturnKey(args);
+
+		return wifiScanId.intValue();
+	}
+}
