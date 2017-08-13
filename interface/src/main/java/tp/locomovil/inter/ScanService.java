@@ -1,5 +1,6 @@
 package tp.locomovil.inter;
 
+import tp.locomovil.model.SMap;
 import tp.locomovil.model.Scan;
 
 /**
@@ -7,4 +8,6 @@ import tp.locomovil.model.Scan;
  */
 public interface ScanService {
 	Scan saveScan(Scan scan);
+
+	SMap saveMap(String mapName);
 }

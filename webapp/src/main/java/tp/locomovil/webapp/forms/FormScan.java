@@ -17,14 +17,15 @@ public class FormScan {
 
 	private Long deviceMillis, NTPMillis;
 
-	private String mapId;
+	@NotBlank
+	private Integer mapId;
 
 	private List<FormWifi> wifis;
 
 	public FormScan () {
 	}
 
-	public String getMapId() {
+	public Integer getMapId() {
 		return mapId;
 	}
 
@@ -168,7 +169,7 @@ public class FormScan {
 		this.NTPMillis = NTPMillis;
 	}
 
-	public void setMapId (String mapId) {
+	public void setMapId (Integer mapId) {
 		this.mapId = mapId;
 	}
 

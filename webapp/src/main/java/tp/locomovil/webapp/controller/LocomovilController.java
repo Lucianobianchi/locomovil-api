@@ -3,42 +3,63 @@ package tp.locomovil.webapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tp.locomovil.inter.LocationService;
+import tp.locomovil.inter.ScanService;
 import tp.locomovil.model.Location;
+import tp.locomovil.model.SMap;
 import tp.locomovil.model.Scan;
 import tp.locomovil.model.WifiData;
 import tp.locomovil.service.ScanServiceImpl;
 import tp.locomovil.webapp.dto.LocationDTO;
+import tp.locomovil.webapp.dto.MapDTO;
+import tp.locomovil.webapp.forms.FormMap;
 import tp.locomovil.webapp.forms.FormScan;
 import tp.locomovil.webapp.forms.FormWifi;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
 @Path("/")
 @Component
-public class HelloWorldController {
+@Produces(value = {MediaType.APPLICATION_JSON})
+public class LocomovilController {
 
 	@Autowired
 	private LocationService locationService;
 
 	@Autowired
-	private ScanServiceImpl scanServiceImpl;
+	private ScanService scanService;
 
-	@GET
-	@Path("test")
-	@Produces(value = { MediaType.APPLICATION_JSON, })
-	public Response getTest() {
-		int s = 1;
-		Location l = locationService.getApproximateLocation(null);
-		return Response.ok(new LocationDTO(l)).build();
+	@Context
+	private UriInfo uriContext;
+
+//	@GET
+//	@Path("/location")
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public Response getLocation(final FormScan f) {
+//		return Response.ok().build();
+//	}
+
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/maps/save")
+	public Response postMap(final FormMap formMap) {
+
+		// TODO: y si me da un mapa con nombre repetido?
+		SMap newMap = scanService.saveMap(formMap.getMapName());
+
+		// TODO location URI
+		return Response.created(uriContext.getBaseUri()).entity(new MapDTO(newMap)).build();
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/save")
+	@Path("/scans/save")
 	public Response postScan(final FormScan f) {
 		final Scan.ScanDataBuilder b = new Scan.ScanDataBuilder();
 		final List<WifiData> wifis = new LinkedList<WifiData>();
@@ -66,7 +87,7 @@ public class HelloWorldController {
 		b.acceleration(f.getAccelerationX(), f.getAccelerationY(), f.getAccelerationZ());
 		b.wifis(wifis);
 
-		scanServiceImpl.saveScan(b.build());
+		scanService.saveScan(b.build());
 
 		return Response.ok().build();
 	}

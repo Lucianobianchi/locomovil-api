@@ -14,7 +14,7 @@ public class Scan {
 
 	private Long deviceMillis, NTPMillis;
 
-	private String mapId;
+	private Integer mapId;
 
 	private List<WifiData> wifis;
 
@@ -50,7 +50,7 @@ public class Scan {
 
 	}
 
-	public String getMapId() {
+	public Integer getMapId() {
 		return mapId;
 	}
 
@@ -138,7 +138,7 @@ public class Scan {
 
 		private Long deviceMillis, NTPMillis;
 
-		private String mapId;
+		private Integer mapId;
 
 		List<WifiData> wifis;
 
@@ -201,7 +201,7 @@ public class Scan {
 			return this;
 		}
 
-		public ScanDataBuilder mapId(String id) {
+		public ScanDataBuilder mapId(Integer id) {
 			this.mapId = id;
 			return this;
 		}

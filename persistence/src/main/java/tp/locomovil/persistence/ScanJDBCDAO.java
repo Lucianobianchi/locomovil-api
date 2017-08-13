@@ -53,8 +53,7 @@ public class ScanJDBCDAO implements ScanDAO { // TODO interface
 		args.put("coord_y", scan.getUserCoordY());
 		args.put("device_time", scan.getDeviceMillis());
 		args.put("ntp_time", scan.getNTPMillis());
-//		args.put("map_id", scan.getMapId());
-		args.put("map_id", 12341234);
+		args.put("map_id", scan.getMapId());
 		args.put("rotation_matrix", scan.getRotationMatrix());
 
 		final Number wifiScanId = jdbcInsert.executeAndReturnKey(args);
