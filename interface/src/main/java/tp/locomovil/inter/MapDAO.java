@@ -1,5 +1,6 @@
 package tp.locomovil.inter;
 
+import tp.locomovil.model.Location;
 import tp.locomovil.model.SMap;
 
 /**
@@ -7,4 +8,8 @@ import tp.locomovil.model.SMap;
  */
 public interface MapDAO {
 	SMap createMap(String name);
+
+	SMap getMapByName (String name);
+
+	SMap getMapById (long id);
 }

@@ -97,7 +97,7 @@ public class FormScan {
 		return locationResolution;
 	}
 
-	public List<FormWifi> getWifiScans () {
+	public List<FormWifi> getWifis () {
 		return wifis;
 	}
 

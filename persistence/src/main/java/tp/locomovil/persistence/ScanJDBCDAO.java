@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import tp.locomovil.inter.ScanDAO;
+import tp.locomovil.model.Location;
 import tp.locomovil.model.Scan;
 
 import javax.sql.DataSource;

@@ -45,15 +45,18 @@ public class LocomovilController {
 //		return Response.ok().build();
 //	}
 
-	@POST
+	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/maps/save")
 	public Response postMap(final FormMap formMap) {
+		// TODO location URI bien
+		final String name = formMap.getMapName();
+		SMap existingMap = scanService.getMapByName(name);
+		if (existingMap != null)
+			return Response.ok(uriContext.getBaseUri()).entity(new MapDTO(existingMap)).build();
 
-		// TODO: y si me da un mapa con nombre repetido?
-		SMap newMap = scanService.saveMap(formMap.getMapName());
+		SMap newMap = scanService.saveMap(name);
 
-		// TODO location URI
 		return Response.created(uriContext.getBaseUri()).entity(new MapDTO(newMap)).build();
 	}
 
@@ -64,8 +67,8 @@ public class LocomovilController {
 		final Scan.ScanDataBuilder b = new Scan.ScanDataBuilder();
 		final List<WifiData> wifis = new LinkedList<WifiData>();
 
-		if (f.getWifiScans() != null) {
-			for (FormWifi w: f.getWifiScans()) {
+		if (f.getWifis() != null) {
+			for (FormWifi w: f.getWifis()) {
 				WifiData.WifiDataBuilder wb = new WifiData.WifiDataBuilder();
 				wb.frequency(w.getFrequency());
 				wb.level(w.getLevel());
@@ -87,9 +90,9 @@ public class LocomovilController {
 		b.acceleration(f.getAccelerationX(), f.getAccelerationY(), f.getAccelerationZ());
 		b.wifis(wifis);
 
-		scanService.saveScan(b.build());
+		Scan s = scanService.saveScan(b.build());
 
-		return Response.ok().build();
+		return Response.ok().entity(s).build();
 	}
 
 }

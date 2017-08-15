@@ -10,4 +10,6 @@ public interface ScanService {
 	Scan saveScan(Scan scan);
 
 	SMap saveMap(String mapName);
+
+	SMap getMapByName(String mapName);
 }

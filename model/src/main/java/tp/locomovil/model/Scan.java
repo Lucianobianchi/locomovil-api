@@ -2,6 +2,7 @@ package tp.locomovil.model;
 
 import java.util.List;
 
+// FIXME quedan acoplados los JSON al modelo en Java pero por ahora lo dejo así
 public class Scan {
 
 	private Double userCoordX, userCoordY;
@@ -17,6 +18,9 @@ public class Scan {
 	private Integer mapId;
 
 	private List<WifiData> wifis;
+
+	public Scan() {
+	}
 
 	private Scan (ScanDataBuilder builder) {
 		// Geomagnetic Field
@@ -122,8 +126,84 @@ public class Scan {
 		return locationResolution;
 	}
 
-	public List<WifiData> getWifiScans () {
+	public List<WifiData> getWifis () {
 		return wifis;
+	}
+
+	public void setUserCoordX (Double userCoordX) {
+		this.userCoordX = userCoordX;
+	}
+
+	public void setUserCoordY (Double userCoordY) {
+		this.userCoordY = userCoordY;
+	}
+
+	public void setRotationMatrix (float[] rotationMatrix) {
+		this.rotationMatrix = rotationMatrix;
+	}
+
+	public void setGeomagneticX (Double geomagneticX) {
+		this.geomagneticX = geomagneticX;
+	}
+
+	public void setGeomagneticY (Double geomagneticY) {
+		this.geomagneticY = geomagneticY;
+	}
+
+	public void setGeomagneticZ (Double geomagneticZ) {
+		this.geomagneticZ = geomagneticZ;
+	}
+
+	public void setGeomagneticResolution (Double geomagneticResolution) {
+		this.geomagneticResolution = geomagneticResolution;
+	}
+
+	public void setAccelerationX (Double accelerationX) {
+		this.accelerationX = accelerationX;
+	}
+
+	public void setAccelerationY (Double accelerationY) {
+		this.accelerationY = accelerationY;
+	}
+
+	public void setAccelerationZ (Double accelerationZ) {
+		this.accelerationZ = accelerationZ;
+	}
+
+	public void setAccelerationResolution (Double accelerationResolution) {
+		this.accelerationResolution = accelerationResolution;
+	}
+
+	public void setLatitude (Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public void setLongitude (Double longitude) {
+		this.longitude = longitude;
+	}
+
+	public void setAltitude (Double altitude) {
+		this.altitude = altitude;
+	}
+
+	public void setLocationResolution (Double locationResolution) {
+		this.locationResolution = locationResolution;
+	}
+
+	public void setDeviceMillis (Long deviceMillis) {
+		this.deviceMillis = deviceMillis;
+	}
+
+	public void setNTPMillis (Long NTPMillis) {
+		this.NTPMillis = NTPMillis;
+	}
+
+	public void setMapId (Integer mapId) {
+		this.mapId = mapId;
+	}
+
+	public void setWifis (List<WifiData> wifis) {
+		this.wifis = wifis;
 	}
 
 	public static class ScanDataBuilder {

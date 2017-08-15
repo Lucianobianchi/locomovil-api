@@ -11,6 +11,9 @@ public class WifiData {
 		this.frequency = builder.frequency;
 	}
 
+	public WifiData() {
+	}
+
 	public String getBSSID() {
 		return BSSID;
 	}
@@ -21,6 +24,18 @@ public class WifiData {
 
 	public Integer getFrequency() {
 		return frequency;
+	}
+
+	public void setBSSID (String BSSID) {
+		this.BSSID = BSSID;
+	}
+
+	public void setLevel (Integer level) {
+		this.level = level;
+	}
+
+	public void setFrequency (Integer frequency) {
+		this.frequency = frequency;
 	}
 
 	public static class WifiDataBuilder {
