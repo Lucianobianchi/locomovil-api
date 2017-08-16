@@ -39,20 +39,12 @@ public class LocomovilController {
 	@Context
 	private UriInfo uriContext;
 
-	@GET
+	@POST
 	@Path("/location")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getLocation(final FormScan f) {
-		List<WifiData> wifis = new LinkedList<WifiData>();
-		for (FormWifi formWifi: f.getWifis()) {
-			wifis.add(new WifiData.WifiDataBuilder()
-					.bssid(formWifi.getBSSID())
-					.frequency(formWifi.getFrequency())
-					.level(formWifi.getLevel())
-					.build());
-		}
-
-		Location approximateLocation = locationService.getApproximateLocation(wifis);
+		Scan s = buildScan(f);
+		Location approximateLocation = locationService.getApproximateLocation(s);
 		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
 	}
 
@@ -98,6 +90,12 @@ public class LocomovilController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/scans/save")
 	public Response postScan(final FormScan f) {
+		Scan s = scanService.saveScan(buildScan(f));
+
+		return Response.ok().entity(s).build();
+	}
+
+	private Scan buildScan(FormScan f) {
 		final Scan.ScanDataBuilder b = new Scan.ScanDataBuilder();
 		final List<WifiData> wifis = new LinkedList<WifiData>();
 
@@ -124,9 +122,6 @@ public class LocomovilController {
 		b.acceleration(f.getAccelerationX(), f.getAccelerationY(), f.getAccelerationZ());
 		b.wifis(wifis);
 
-		Scan s = scanService.saveScan(b.build());
-
-		return Response.ok().entity(s).build();
+		return b.build();
 	}
-
 }

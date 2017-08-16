@@ -24,6 +24,7 @@ public class LocationServiceImpl implements LocationService {
 	@Autowired
 	private ScanService scanService;
 
+	// No sirve pa' nada
 	public Location getApproximateLocation (List<WifiData> wifiScans) {
 		return new Location(100, 100);
 	}
@@ -54,7 +55,9 @@ public class LocationServiceImpl implements LocationService {
 			double auxDistance = 0;
 			for (WifiData w: s.getWifis()) {
 				List<WifiData> queryWifis = queryScan.getWifis();
-				auxDistance += Math.pow(queryWifis.get(queryWifis.indexOf(w)).getLevel() - w.getLevel(), 2);
+				int index = queryWifis.indexOf(w);
+				if (index >= 0)
+					auxDistance += Math.pow(queryWifis.get(index).getLevel() - w.getLevel(), 2);
 			}
 			if (auxDistance < distance) {
 				distance = auxDistance;
