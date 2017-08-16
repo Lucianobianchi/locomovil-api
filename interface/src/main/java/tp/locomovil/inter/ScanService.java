@@ -12,4 +12,6 @@ public interface ScanService {
 	SMap saveMap(String mapName);
 
 	SMap getMapByName(String mapName);
+
+	SMap getMapById (long id);
 }

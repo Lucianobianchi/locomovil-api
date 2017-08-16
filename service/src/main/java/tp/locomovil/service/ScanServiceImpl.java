@@ -39,4 +39,10 @@ public class ScanServiceImpl implements ScanService {
 	public SMap getMapByName (String mapName) {
 		return mapDAO.getMapByName(mapName);
 	}
+
+	public SMap getMapById (long id) {
+		return mapDAO.getMapById(id);
+	}
+
+
 }

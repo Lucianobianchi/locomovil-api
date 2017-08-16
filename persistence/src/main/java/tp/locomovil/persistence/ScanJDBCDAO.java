@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class ScanJDBCDAO implements ScanDAO { // TODO interface
+public class ScanJDBCDAO implements ScanDAO {
 
 	private JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert jdbcInsert;

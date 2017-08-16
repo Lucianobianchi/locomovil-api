@@ -23,6 +23,7 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 @Path("/")
 @Component
@@ -38,12 +39,23 @@ public class LocomovilController {
 	@Context
 	private UriInfo uriContext;
 
-//	@GET
-//	@Path("/location")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public Response getLocation(final FormScan f) {
-//		return Response.ok().build();
-//	}
+	@GET
+	@Path("/location")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getLocation(final FormScan f) {
+		Random r = new Random();
+		Location l = new Location((double)r.nextInt(100), (double)r.nextInt(100));
+		return Response.ok().entity(new LocationDTO(l)).build();
+	}
+
+	@GET
+	@Path("/maps/{id}")
+	public Response getMapById(@PathParam("id") long id) {
+		final SMap map = scanService.getMapById(id);
+		if (map == null)
+			return Response.status(404).build();
+		return Response.ok(new MapDTO(map)).build();
+	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
