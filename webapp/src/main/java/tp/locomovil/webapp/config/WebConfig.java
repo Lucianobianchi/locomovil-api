@@ -1,6 +1,7 @@
 package tp.locomovil.webapp.config;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -18,16 +19,6 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan({"tp.locomovil.webapp.controller", "tp.locomovil.persistence", "tp.locomovil.service"})
 @Configuration
 public class WebConfig {
-	
-	@Bean
-	public ViewResolver viewResolver() {
-		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-		resolver.setViewClass(JstlView.class);
-		resolver.setPrefix("/WEB-INF/jsp/");
-		resolver.setSuffix(".jsp");
-		
-		return resolver;
-	}
 
 	@Profile("dev")
 	@Bean
@@ -42,12 +33,18 @@ public class WebConfig {
 	}
 
 	@Profile("live")
+	@Bean
 	public DataSource liveDataSource() {
+		Properties props = new Properties();
+		props.setProperty("ssl", "true");
+		props.setProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
+		props.setProperty("user", "euszfboadbbtlw");
+		props.setProperty("password", "afbadf5a0b55a7a7533ef81ee4fb3b0cdf2a11f58ebd3222f1ace5f2e8b3cc6f");
+
 		final SimpleDriverDataSource ds = new SimpleDriverDataSource();
 		ds.setDriverClass(org.postgresql.Driver.class);
-		ds.setUrl("jdbc:postgres://euszfboadbbtlw:afbadf5a0b55a7a7533ef81ee4fb3b0cdf2a11f58ebd3222f1ace5f2e8b3cc6f@ec2-23-23-234-118.compute-1.amazonaws.com:5432/d7hj75fa5krdvs");
-		ds.setUsername("euszfboadbbtlw");
-		ds.setPassword("afbadf5a0b55a7a7533ef81ee4fb3b0cdf2a11f58ebd3222f1ace5f2e8b3cc6f");
+		ds.setConnectionProperties(props);
+		ds.setUrl("jdbc:postgresql://ec2-23-23-234-118.compute-1.amazonaws.com:5432/d7hj75fa5krdvs");
 		return ds;
 	}
 }
