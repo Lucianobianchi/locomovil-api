@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import tp.locomovil.inter.ScanDAO;
 import tp.locomovil.model.Location;
 import tp.locomovil.model.Scan;
+import tp.locomovil.model.WifiData;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -24,7 +25,22 @@ public class ScanJDBCDAO implements ScanDAO {
 
 	private final static RowMapper<Scan> ROW_MAPPER = new RowMapper<Scan>() {
 		public Scan mapRow (ResultSet rs, int rowNum) throws SQLException {
-			return null;
+			Scan.ScanDataBuilder builder = new Scan.ScanDataBuilder();
+//			builder.rotationMatrix() TODO
+			builder.NTPMillis(rs.getLong("ntp_time"));
+			builder.deviceMillis(rs.getLong("device_time"));
+
+			builder.acceleration(rs.getDouble("accel_x"), rs.getDouble("accel_y"), rs.getDouble("accel_z"));
+			builder.accelerationResolution(rs.getDouble("accel_res"));
+			builder.location(rs.getDouble("latitude"), rs.getDouble("longitude"), rs.getDouble("altitude"));
+			builder.locationResolution(rs.getDouble("location_res"));
+			builder.geomagneticField(rs.getDouble("geomag_x"), rs.getDouble("geomag_y"), rs.getDouble("geomag_z"));
+			builder.geomagneticFieldResolution(rs.getDouble("geomag_res"));
+			builder.userCoordinates(rs.getDouble("coord_x"), rs.getDouble("coord_y"));
+			builder.mapId(rs.getInt("map_id"));
+			builder.wifiScanId(rs.getLong("wifi_scan_id"));
+
+			return builder.build();
 		}
 	};
 
@@ -60,5 +76,16 @@ public class ScanJDBCDAO implements ScanDAO {
 		final Number wifiScanId = jdbcInsert.executeAndReturnKey(args);
 
 		return wifiScanId.intValue();
+	}
+
+	public List<Scan> getAllScansByMapId(long mapId) {
+		return jdbcTemplate.query("SELECT * FROM scans WHERE map_id = ?;", ROW_MAPPER, mapId);
+	}
+
+	public List<Scan> getScansByLocation(long mapId, Location location) { // La precisión la "calcula" el service
+		final long precision = 10; // TODO: calculo inteligente de la precisión. (?)
+		return jdbcTemplate.query("SELECT * FROM scans "
+				+ "WHERE map_id = ? AND abs(coord_x - ?) < ? AND abs(coord_y - ?) < ?;",
+				ROW_MAPPER, mapId, location.XCoordinate(), precision, location.YCoordinate(), precision);
 	}
 }

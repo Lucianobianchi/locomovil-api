@@ -1,11 +1,11 @@
 package tp.locomovil.inter;
 
+import tp.locomovil.model.Location;
 import tp.locomovil.model.SMap;
 import tp.locomovil.model.Scan;
 
-/**
- * Created by Bianchi on 12/8/17.
- */
+import java.util.List;
+
 public interface ScanService {
 	Scan saveScan(Scan scan);
 
@@ -14,4 +14,8 @@ public interface ScanService {
 	SMap getMapByName(String mapName);
 
 	SMap getMapById (long id);
+
+	List<Scan> getScansForLocation (long mapId, Location location);
+
+	List<Scan> getScansForId(long mapId);
 }

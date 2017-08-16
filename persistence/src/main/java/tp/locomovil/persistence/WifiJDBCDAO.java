@@ -51,11 +51,14 @@ public class WifiJDBCDAO implements WifiDAO {
 		jdbcInsert.execute(args);
 	}
 
-	public List<WifiData> getWifiScanInCoordinates(Location location, double precision) {
-		List<WifiData> wifis = jdbcTemplate.query("SELECT wifi_scan_id, bssid, level, frequency FROM "
-			+ "scans NATURAL JOIN wifi_scans WHERE abs(coord_x - ?) < ? AND abs(coord_y - ?) < ?;",
-			ROW_MAPPER, location.XCoordinate(), precision, location.YCoordinate(), precision);
+	public List<WifiData> getWifiScanById(long wifiId) {
+		return jdbcTemplate.query("SELECT wifi_scan_id, bssid, level, frequency FROM "
+						+ "wifi_scans WHERE wifi_scan_id = ?;", ROW_MAPPER, wifiId);
+	}
 
-		return wifis;
+	public List<WifiData> getWifiScanInCoordinates(Location location, double precision) {
+		return jdbcTemplate.query("SELECT wifi_scan_id, bssid, level, frequency "
+				+ "FROM wifi_scans WHERE abs(coord_x - ?) < ? AND abs(coord_y - ?) < ?;",
+			ROW_MAPPER, location.XCoordinate(), precision, location.YCoordinate(), precision);
 	}
 }

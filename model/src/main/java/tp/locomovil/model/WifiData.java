@@ -1,6 +1,6 @@
 package tp.locomovil.model;
 
-public class WifiData {
+public class WifiData implements Comparable {
 
 	private String BSSID;
 	private Integer level, frequency;
@@ -36,6 +36,28 @@ public class WifiData {
 
 	public void setFrequency (Integer frequency) {
 		this.frequency = frequency;
+	}
+
+	public int compareTo (Object o) {
+		return BSSID.compareTo(((WifiData) o).getBSSID());
+	}
+
+	@Override
+	public boolean equals (Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		WifiData wifiData = (WifiData) o;
+
+		return BSSID.equals(wifiData.BSSID);
+
+	}
+
+	@Override
+	public int hashCode () {
+		return BSSID.hashCode();
 	}
 
 	public static class WifiDataBuilder {

@@ -11,25 +11,25 @@ import tp.locomovil.model.WifiData;
 import tp.locomovil.service.ScanServiceImpl;
 import tp.locomovil.webapp.dto.LocationDTO;
 import tp.locomovil.webapp.dto.MapDTO;
+import tp.locomovil.webapp.dto.ScanListDTO;
 import tp.locomovil.webapp.forms.FormMap;
 import tp.locomovil.webapp.forms.FormScan;
 import tp.locomovil.webapp.forms.FormWifi;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+
 @Path("/")
 @Component
 @Produces(value = {MediaType.APPLICATION_JSON})
 public class LocomovilController {
-
 	@Autowired
 	private LocationService locationService;
 
@@ -43,18 +43,40 @@ public class LocomovilController {
 	@Path("/location")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getLocation(final FormScan f) {
-		Random r = new Random();
-		Location l = new Location((double)r.nextInt(100), (double)r.nextInt(100));
-		return Response.ok().entity(new LocationDTO(l)).build();
+		List<WifiData> wifis = new LinkedList<WifiData>();
+		for (FormWifi formWifi: f.getWifis()) {
+			wifis.add(new WifiData.WifiDataBuilder()
+					.bssid(formWifi.getBSSID())
+					.frequency(formWifi.getFrequency())
+					.level(formWifi.getLevel())
+					.build());
+		}
+
+		Location approximateLocation = locationService.getApproximateLocation(wifis);
+		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
 	}
 
 	@GET
 	@Path("/maps/{id}")
-	public Response getMapById(@PathParam("id") long id) {
-		final SMap map = scanService.getMapById(id);
+	public Response getMapById(@PathParam("id") long mapId) {
+		final SMap map = scanService.getMapById(mapId);
 		if (map == null)
-			return Response.status(404).build();
+			return Response.status(NOT_FOUND).build();
 		return Response.ok(new MapDTO(map)).build();
+	}
+
+	@GET
+	@Path("/scans/{id}")
+	public Response getScansByLocation(@PathParam("id") long mapId,
+			@NotNull @QueryParam("x_coord") double xCoord,
+			@NotNull @QueryParam("y_coord") double yCoord) {
+		final Location l = new Location(xCoord, yCoord);
+		final List<Scan> scans = scanService.getScansForLocation(mapId, l);
+
+		if (scans.isEmpty())
+			return Response.status(NOT_FOUND).build();
+
+		return Response.ok(new ScanListDTO(scans)).build();
 	}
 
 	@PUT

@@ -19,7 +19,41 @@ public class Scan {
 
 	private List<WifiData> wifis;
 
+	private Long wifiScanId;
+
+	public Long getWifiScanId () {
+		return wifiScanId;
+	}
+
+	private void setWifiScanId (Long wifiScanId) {
+		this.wifiScanId = wifiScanId;
+	}
+
 	public Scan() {
+	}
+
+	@Override
+	public boolean equals (Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		Scan scan = (Scan) o;
+
+		if (mapId != null ? !mapId.equals(scan.mapId) : scan.mapId != null)
+			return false;
+		return !(wifiScanId != null ?
+				!wifiScanId.equals(scan.wifiScanId) :
+				scan.wifiScanId != null);
+
+	}
+
+	@Override
+	public int hashCode () {
+		int result = mapId != null ? mapId.hashCode() : 0;
+		result = 31 * result + (wifiScanId != null ? wifiScanId.hashCode() : 0);
+		return result;
 	}
 
 	private Scan (ScanDataBuilder builder) {
@@ -51,6 +85,7 @@ public class Scan {
 
 		this.mapId = builder.mapId;
 		this.wifis = builder.wifis;
+		this.wifiScanId = builder.wifiScanId;
 
 	}
 
@@ -130,75 +165,75 @@ public class Scan {
 		return wifis;
 	}
 
-	public void setUserCoordX (Double userCoordX) {
+	private void setUserCoordX (Double userCoordX) {
 		this.userCoordX = userCoordX;
 	}
 
-	public void setUserCoordY (Double userCoordY) {
+	private void setUserCoordY (Double userCoordY) {
 		this.userCoordY = userCoordY;
 	}
 
-	public void setRotationMatrix (float[] rotationMatrix) {
+	private void setRotationMatrix (float[] rotationMatrix) {
 		this.rotationMatrix = rotationMatrix;
 	}
 
-	public void setGeomagneticX (Double geomagneticX) {
+	private void setGeomagneticX (Double geomagneticX) {
 		this.geomagneticX = geomagneticX;
 	}
 
-	public void setGeomagneticY (Double geomagneticY) {
+	private void setGeomagneticY (Double geomagneticY) {
 		this.geomagneticY = geomagneticY;
 	}
 
-	public void setGeomagneticZ (Double geomagneticZ) {
+	private void setGeomagneticZ (Double geomagneticZ) {
 		this.geomagneticZ = geomagneticZ;
 	}
 
-	public void setGeomagneticResolution (Double geomagneticResolution) {
+	private void setGeomagneticResolution (Double geomagneticResolution) {
 		this.geomagneticResolution = geomagneticResolution;
 	}
 
-	public void setAccelerationX (Double accelerationX) {
+	private void setAccelerationX (Double accelerationX) {
 		this.accelerationX = accelerationX;
 	}
 
-	public void setAccelerationY (Double accelerationY) {
+	private void setAccelerationY (Double accelerationY) {
 		this.accelerationY = accelerationY;
 	}
 
-	public void setAccelerationZ (Double accelerationZ) {
+	private void setAccelerationZ (Double accelerationZ) {
 		this.accelerationZ = accelerationZ;
 	}
 
-	public void setAccelerationResolution (Double accelerationResolution) {
+	private void setAccelerationResolution (Double accelerationResolution) {
 		this.accelerationResolution = accelerationResolution;
 	}
 
-	public void setLatitude (Double latitude) {
+	private void setLatitude (Double latitude) {
 		this.latitude = latitude;
 	}
 
-	public void setLongitude (Double longitude) {
+	private void setLongitude (Double longitude) {
 		this.longitude = longitude;
 	}
 
-	public void setAltitude (Double altitude) {
+	private void setAltitude (Double altitude) {
 		this.altitude = altitude;
 	}
 
-	public void setLocationResolution (Double locationResolution) {
+	private void setLocationResolution (Double locationResolution) {
 		this.locationResolution = locationResolution;
 	}
 
-	public void setDeviceMillis (Long deviceMillis) {
+	private void setDeviceMillis (Long deviceMillis) {
 		this.deviceMillis = deviceMillis;
 	}
 
-	public void setNTPMillis (Long NTPMillis) {
+	private void setNTPMillis (Long NTPMillis) {
 		this.NTPMillis = NTPMillis;
 	}
 
-	public void setMapId (Integer mapId) {
+	private void setMapId (Integer mapId) {
 		this.mapId = mapId;
 	}
 
@@ -221,6 +256,8 @@ public class Scan {
 		private Integer mapId;
 
 		List<WifiData> wifis;
+
+		private Long wifiScanId;
 
 		public ScanDataBuilder geomagneticField(Double X, Double Y, Double Z) {
 			geomagneticX = X;
@@ -288,6 +325,11 @@ public class Scan {
 
 		public ScanDataBuilder wifis(List<WifiData> w) {
 			this.wifis = w;
+			return this;
+		}
+
+		public ScanDataBuilder wifiScanId(Long id) {
+			this.wifiScanId = id;
 			return this;
 		}
 

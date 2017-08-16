@@ -6,9 +6,12 @@ import tp.locomovil.inter.MapDAO;
 import tp.locomovil.inter.ScanDAO;
 import tp.locomovil.inter.ScanService;
 import tp.locomovil.inter.WifiDAO;
+import tp.locomovil.model.Location;
 import tp.locomovil.model.SMap;
 import tp.locomovil.model.Scan;
 import tp.locomovil.model.WifiData;
+
+import java.util.List;
 
 @Service
 public class ScanServiceImpl implements ScanService {
@@ -42,6 +45,24 @@ public class ScanServiceImpl implements ScanService {
 
 	public SMap getMapById (long id) {
 		return mapDAO.getMapById(id);
+	}
+
+	public List<Scan> getScansForId(long mapId) {
+		List<Scan> scans = scanDAO.getAllScansByMapId(mapId);
+		for (Scan s: scans) {
+			s.setWifis(wifiDAO.getWifiScanById(s.getWifiScanId()));
+		}
+
+		return scans;
+	}
+
+	public List<Scan> getScansForLocation (long mapId, Location location) {
+		List<Scan> scans = scanDAO.getScansByLocation(mapId, location);
+		for (Scan s: scans) {
+			s.setWifis(wifiDAO.getWifiScanById(s.getWifiScanId()));
+		}
+
+		return scans;
 	}
 
 
