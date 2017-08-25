@@ -30,52 +30,31 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	public Location getApproximateLocation(Scan queryScan) {
-		List<Scan> allScans = scanService.getScansForId(queryScan.getMapId());
-		int maxIntersectionSize = 0;
-		for (Scan s: allScans) {
-			int size = intersectionSize(queryScan.getWifis(), s.getWifis(), new Comparator<WifiData>() {
-				public int compare (WifiData o1, WifiData o2) {
-					return o1.getBSSID().compareTo(o2.getBSSID());
-				}
-			});
+		List<Scan> calibrationScans = scanService.getScansForId(queryScan.getMapId());
+		int maxCoincidences = 0;
 
-			maxIntersectionSize = (size > maxIntersectionSize) ? size : maxIntersectionSize;
-		}
+		double minDistance = Double.MAX_VALUE;
+		Scan nearestScan = calibrationScans.get(0);
 
-		final int finalMaxIntersectionSize = maxIntersectionSize;
-		allScans.removeIf(new Predicate<Scan>() {
-			public boolean test (Scan scan) {
-				return scan.getWifis().size() < finalMaxIntersectionSize;
-			}
-		});
+		List<WifiData> queryWifis = queryScan.getWifis();
 
-		double distance = Double.MAX_VALUE;
-		Scan nearestScan = allScans.get(0);
-		for (Scan s: allScans) {
+		for (Scan calibrationScan: calibrationScans) {
+			int coincidences = 0;
 			double auxDistance = 0;
-			for (WifiData w: s.getWifis()) {
-				List<WifiData> queryWifis = queryScan.getWifis();
-				int index = queryWifis.indexOf(w);
-				if (index >= 0)
-					auxDistance += Math.pow(queryWifis.get(index).getLevel() - w.getLevel(), 2);
+			for (WifiData calibrationWifi: calibrationScan.getWifis()) {
+				int index = queryWifis.indexOf(calibrationWifi);
+				if (index >= 0) {
+					coincidences++;
+					auxDistance += Math.pow(queryWifis.get(index).getLevel() - calibrationWifi.getLevel(), 2);
+				}
 			}
-			if (auxDistance < distance) {
-				distance = auxDistance;
-				nearestScan = s;
+			if (auxDistance < minDistance && coincidences >= maxCoincidences) {
+				minDistance = auxDistance;
+				maxCoincidences = coincidences;
+				nearestScan = calibrationScan;
 			}
 		}
 
 		return new Location(nearestScan.getUserCoordX(), nearestScan.getUserCoordY());
-	}
-
-	private int intersectionSize(List<WifiData> l1, List<WifiData> l2, Comparator<WifiData> comparator) {
-		int size = 0;
-		for (WifiData w1: l1) {
-			for (WifiData w2: l2) {
-				if (comparator.compare(w1, w2) == 0)
-					size++;
-			}
-		}
-		return size;
 	}
 }
