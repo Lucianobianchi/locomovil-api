@@ -34,27 +34,33 @@ public class MapJDBCDAO implements MapDAO {
 			.usingGeneratedKeyColumns("map_id");
 	}
 
-	public SMap createMap (String name) {
+	public SMap createMap (long projectId, String name) {
 		if (name == null)
 			return null;
 
 		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("name", name);
+		args.put("project_id", projectId);
 
 		final Number mapId = jdbcInsert.executeAndReturnKey(args);
 
 		return new SMap(name, mapId.longValue());
 	}
 
-	public SMap getMapById (long id) {
-		final List<SMap> result = jdbcTemplate.query("SELECT * FROM maps WHERE map_id = ?", ROW_MAPPER, id);
+	public SMap getMapById (long projectId, long id) {
+		final List<SMap> result = jdbcTemplate.query("SELECT * FROM maps WHERE map_id = ? AND project_id = ?", ROW_MAPPER, id, projectId);
 		return result.isEmpty() ? null : result.get(0);
 	}
 
-	public SMap getMapByName (String name) {
+	public SMap getMapByName (long projectId, String name) {
 		if (name == null)
 			return null;
-		final List<SMap> result = jdbcTemplate.query("SELECT * FROM maps WHERE name = ?", ROW_MAPPER, name);
+		final List<SMap> result = jdbcTemplate.query("SELECT * FROM maps WHERE name = ? AND project_id = ?", ROW_MAPPER, name, projectId);
 		return result.isEmpty() ? null : result.get(0);
+	}
+
+	public List<SMap> getMapsByProjectId (long projectId) {
+		final List<SMap> result = jdbcTemplate.query("SELECT * FROM maps WHERE project_id = ?", ROW_MAPPER, projectId);
+		return result;
 	}
 }

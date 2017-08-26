@@ -2,14 +2,8 @@ package tp.locomovil.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tp.locomovil.inter.MapDAO;
-import tp.locomovil.inter.ScanDAO;
-import tp.locomovil.inter.ScanService;
-import tp.locomovil.inter.WifiDAO;
-import tp.locomovil.model.Location;
-import tp.locomovil.model.SMap;
-import tp.locomovil.model.Scan;
-import tp.locomovil.model.WifiData;
+import tp.locomovil.inter.*;
+import tp.locomovil.model.*;
 
 import java.util.List;
 
@@ -25,7 +19,12 @@ public class ScanServiceImpl implements ScanService {
 	@Autowired
 	private MapDAO mapDAO;
 
+	@Autowired
+	private ProjectDAO projectDAO;
+
 	public Scan saveScan(Scan scan) {
+		// TODO: hay que chequear que el scan pertenezca a algún mapa y proyecto existentes, no
+		// dejar que explote todo
 		int wifiId = scanDAO.saveScan(scan);
 
 		for (WifiData w: scan.getWifis()) {
@@ -35,16 +34,27 @@ public class ScanServiceImpl implements ScanService {
 		return scan;
 	}
 
-	public SMap saveMap (String mapName) {
-		return mapDAO.createMap(mapName);
+	public Project saveProject (String projectName) {
+		Project p = projectDAO.getProjectByName(projectName);
+		if (p != null)
+			return p;
+		return projectDAO.createProject(projectName);
 	}
 
-	public SMap getMapByName (String mapName) {
-		return mapDAO.getMapByName(mapName);
+	public SMap saveMap (long projectId, String mapName) {
+		Project p = projectDAO.getProjectById(projectId);
+		if (p == null)
+			return null; // Project did not exist
+
+		SMap existing = mapDAO.getMapByName(projectId, mapName);
+		if (existing != null)
+			return existing;
+
+		return mapDAO.createMap(projectId, mapName);
 	}
 
-	public SMap getMapById (long id) {
-		return mapDAO.getMapById(id);
+	public List<SMap> getMapsInProject(long id) {
+		return mapDAO.getMapsByProjectId(id);
 	}
 
 	public List<Scan> getScansForId(long mapId) {
@@ -65,5 +75,8 @@ public class ScanServiceImpl implements ScanService {
 		return scans;
 	}
 
+	public SMap getMapByName (long projectId, String name) {
+		return mapDAO.getMapByName(projectId, name);
+	}
 
 }

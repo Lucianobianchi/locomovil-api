@@ -1,7 +1,10 @@
 package tp.locomovil.webapp.forms;
 
 import org.hibernate.validator.constraints.NotBlank;
+import tp.locomovil.model.Scan;
+import tp.locomovil.model.WifiData;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class FormScan {
@@ -19,6 +22,9 @@ public class FormScan {
 
 	@NotBlank
 	private Integer mapId;
+
+	@NotBlank
+	private Integer projectId;
 
 	private List<FormWifi> wifis;
 
@@ -175,5 +181,48 @@ public class FormScan {
 
 	public void setWifis (List<FormWifi> wifis) {
 		this.wifis = wifis;
+	}
+
+	public Integer getProjectId () {
+		return projectId;
+	}
+
+	public void setProjectId (Integer projectId) {
+		this.projectId = projectId;
+	}
+
+	public Scan toScan () {
+		return buildScan(this);
+	}
+
+	private static Scan buildScan(FormScan f) {
+		final Scan.ScanDataBuilder b = new Scan.ScanDataBuilder();
+		final List<WifiData> wifis = new LinkedList<WifiData>();
+
+		if (f.getWifis() != null) {
+			for (FormWifi w: f.getWifis()) {
+				WifiData.WifiDataBuilder wb = new WifiData.WifiDataBuilder();
+				wb.frequency(w.getFrequency());
+				wb.level(w.getLevel());
+				wb.bssid(w.getBSSID());
+				wifis.add(wb.build());
+			}
+		}
+
+		b.userCoordinates(f.getUserCoordX(), f.getUserCoordY());
+		b.rotationMatrix(f.getRotationMatrix());
+		b.mapId(f.getMapId());
+		b.projectId(f.getProjectId());
+		b.location(f.getLatitude(), f.getLongitude(), f.getAltitude());
+		b.locationResolution(f.getLocationResolution());
+		b.NTPMillis(f.getNTPMillis());
+		b.deviceMillis(f.getDeviceMillis());
+		b.geomagneticFieldResolution(f.getGeomagneticResolution());
+		b.geomagneticField(f.getGeomagneticX(), f.getGeomagneticY(), f.getGeomagneticZ());
+		b.accelerationResolution(f.getAccelerationResolution());
+		b.acceleration(f.getAccelerationX(), f.getAccelerationY(), f.getAccelerationZ());
+		b.wifis(wifis);
+
+		return b.build();
 	}
 }

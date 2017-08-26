@@ -2,12 +2,11 @@ package tp.locomovil.webapp.forms;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-public class FormMap {
-
+public class FormProject {
 	@NotBlank
 	String name;
 
-	public FormMap () {
+	public FormProject () {
 	}
 
 	public String getName () {

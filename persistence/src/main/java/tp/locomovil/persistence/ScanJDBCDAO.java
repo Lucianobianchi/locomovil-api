@@ -71,6 +71,7 @@ public class ScanJDBCDAO implements ScanDAO {
 		args.put("device_time", scan.getDeviceMillis());
 		args.put("ntp_time", scan.getNTPMillis());
 		args.put("map_id", scan.getMapId());
+		args.put("project_id", scan.getProjectId());
 		args.put("rotation_matrix", scan.getRotationMatrix());
 
 		final Number wifiScanId = jdbcInsert.executeAndReturnKey(args);

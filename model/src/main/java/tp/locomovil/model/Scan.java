@@ -17,6 +17,8 @@ public class Scan {
 
 	private Integer mapId;
 
+	private Integer projectId;
+
 	private List<WifiData> wifis;
 
 	private Long wifiScanId;
@@ -84,6 +86,7 @@ public class Scan {
 		this.NTPMillis = builder.NTPMillis;
 
 		this.mapId = builder.mapId;
+		this.projectId = builder.projectId;
 		this.wifis = builder.wifis;
 		this.wifiScanId = builder.wifiScanId;
 
@@ -241,6 +244,14 @@ public class Scan {
 		this.wifis = wifis;
 	}
 
+	public Integer getProjectId () {
+		return projectId;
+	}
+
+	public void setProjectId (Integer projectId) {
+		this.projectId = projectId;
+	}
+
 	public static class ScanDataBuilder {
 
 		private Double userCoordX, userCoordY;
@@ -254,6 +265,8 @@ public class Scan {
 		private Long deviceMillis, NTPMillis;
 
 		private Integer mapId;
+
+		private Integer projectId;
 
 		List<WifiData> wifis;
 
@@ -320,6 +333,11 @@ public class Scan {
 
 		public ScanDataBuilder mapId(Integer id) {
 			this.mapId = id;
+			return this;
+		}
+
+		public ScanDataBuilder projectId(Integer id) {
+			this.projectId = id;
 			return this;
 		}
 

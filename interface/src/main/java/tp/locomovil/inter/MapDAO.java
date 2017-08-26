@@ -3,13 +3,15 @@ package tp.locomovil.inter;
 import tp.locomovil.model.Location;
 import tp.locomovil.model.SMap;
 
-/**
- * Created by Bianchi on 13/8/17.
- */
+import java.util.List;
+
+
 public interface MapDAO {
-	SMap createMap(String name);
+	SMap createMap(long projectId, String name);
 
-	SMap getMapByName (String name);
+	SMap getMapById (long projectId, long id);
 
-	SMap getMapById (long id);
+	SMap getMapByName (long projectId, String name);
+
+	List<SMap> getMapsByProjectId (long projectId);
 }
