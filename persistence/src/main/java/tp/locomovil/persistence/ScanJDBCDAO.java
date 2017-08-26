@@ -83,6 +83,10 @@ public class ScanJDBCDAO implements ScanDAO {
 		return jdbcTemplate.query("SELECT * FROM scans WHERE map_id = ?;", ROW_MAPPER, mapId);
 	}
 
+	public List<Scan> getAllScansByProjectId(long projectId) {
+		return jdbcTemplate.query("SELECT * FROM scans WHERE project_id = ?;", ROW_MAPPER, projectId);
+	}
+
 	public List<Scan> getScansByLocation(long mapId, Location location) { // La precisión la "calcula" el service
 		final long precision = 10; // TODO: calculo inteligente de la precisión. (?)
 		return jdbcTemplate.query("SELECT * FROM scans "

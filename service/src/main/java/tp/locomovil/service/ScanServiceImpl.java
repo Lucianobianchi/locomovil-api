@@ -57,8 +57,17 @@ public class ScanServiceImpl implements ScanService {
 		return mapDAO.getMapsByProjectId(id);
 	}
 
-	public List<Scan> getScansForId(long mapId) {
+	public List<Scan> getScansForMapId (long mapId) {
 		List<Scan> scans = scanDAO.getAllScansByMapId(mapId);
+		for (Scan s: scans) {
+			s.setWifis(wifiDAO.getWifiScanById(s.getWifiScanId()));
+		}
+
+		return scans;
+	}
+
+	public List<Scan> getScansForProjectId (long projectId) {
+		List<Scan> scans = scanDAO.getAllScansByProjectId(projectId);
 		for (Scan s: scans) {
 			s.setWifis(wifiDAO.getWifiScanById(s.getWifiScanId()));
 		}

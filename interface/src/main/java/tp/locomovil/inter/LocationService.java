@@ -10,5 +10,5 @@ public interface LocationService {
 
 	Location getApproximateLocation(List<WifiData> wifiScans);
 
-	Location getApproximateLocation(Scan scan);
+	Location getApproximateLocation(Scan locationScan, List<Scan> calibrationScans);
 }

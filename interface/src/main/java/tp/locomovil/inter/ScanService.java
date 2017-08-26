@@ -16,7 +16,9 @@ public interface ScanService {
 
 	List<Scan> getScansForLocation (long mapId, Location location);
 
-	List<Scan> getScansForId(long mapId);
+	List<Scan> getScansForMapId (long mapId);
+
+	List<Scan> getScansForProjectId (long projectId);
 
 	List<SMap> getMapsInProject(long id);
 

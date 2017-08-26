@@ -7,11 +7,7 @@ import tp.locomovil.model.Location;
 import tp.locomovil.model.Scan;
 import tp.locomovil.model.WifiData;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Predicate;
 
 @Service
 public class LocationServiceImpl implements LocationService {
@@ -28,9 +24,8 @@ public class LocationServiceImpl implements LocationService {
 	public Location getApproximateLocation (List<WifiData> wifiScans) {
 		return new Location(100, 100);
 	}
-
-	public Location getApproximateLocation(Scan queryScan) {
-		List<Scan> calibrationScans = scanService.getScansForId(queryScan.getMapId());
+	
+	public Location getApproximateLocation(Scan queryScan, List<Scan> calibrationScans) {
 		int maxCoincidences = 0;
 
 		double minDistance = Double.MAX_VALUE;

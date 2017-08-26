@@ -12,4 +12,6 @@ public interface ScanDAO {
 	List<Scan> getScansByLocation(long mapId, Location location);
 
 	List<Scan> getAllScansByMapId(long mapId);
+
+	List<Scan> getAllScansByProjectId(long projectId);
 }

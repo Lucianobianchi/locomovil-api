@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import tp.locomovil.inter.LocationService;
 import tp.locomovil.inter.ScanService;
 import tp.locomovil.model.Location;
+import tp.locomovil.model.Scan;
 import tp.locomovil.webapp.dto.LocationDTO;
 import tp.locomovil.webapp.forms.FormScan;
 
@@ -16,8 +17,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
-@Path("/")
+@Path("/location")
 @Component
 @Produces(value = {MediaType.APPLICATION_JSON})
 public class LocationController {
@@ -31,10 +33,22 @@ public class LocationController {
 	private UriInfo uriContext;
 
 	@POST
-	@Path("/location")
+	@Path("/map")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getLocation(final FormScan f) {
-		Location approximateLocation = locationService.getApproximateLocation(f.toScan());
+	public Response getLocationByMap(final FormScan f) {
+		Scan queryScan = f.toScan();
+		List<Scan> calibrationScans = scanService.getScansForProjectId(f.getProjectId());
+		Location approximateLocation = locationService.getApproximateLocation(queryScan, calibrationScans);
+		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
+	}
+
+	@POST
+	@Path("/project")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getLocationByProject(final FormScan f) {
+		Scan queryScan = f.toScan();
+		List<Scan> calibrationScans = scanService.getScansForMapId(queryScan.getMapId());
+		Location approximateLocation = locationService.getApproximateLocation(queryScan, calibrationScans);
 		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
 	}
 
