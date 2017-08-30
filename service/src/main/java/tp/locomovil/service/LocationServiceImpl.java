@@ -18,12 +18,13 @@ public class LocationServiceImpl implements LocationService {
 	private WifiDAO wifiDAO;
 
 	@Autowired
-	private ScanService scanService;
+	private ProjectDAO projectDAO;
 
-	// No sirve pa' nada
-	public Location getApproximateLocation (List<WifiData> wifiScans) {
-		return new Location(100, 100);
-	}
+	@Autowired
+	private MapDAO mapDAO;
+
+	@Autowired
+	private ScanService scanService;
 	
 	public Location getApproximateLocation(Scan queryScan, List<Scan> calibrationScans) {
 		int maxCoincidences = 0;
@@ -50,6 +51,9 @@ public class LocationServiceImpl implements LocationService {
 			}
 		}
 
-		return new Location(nearestScan.getUserCoordX(), nearestScan.getUserCoordY());
+		String projectName = projectDAO.getProjectById(nearestScan.getProjectId()).getName();
+		String mapName = mapDAO.getMapById(nearestScan.getProjectId(), nearestScan.getMapId()).getMapName();
+
+		return new Location(projectName, mapName, nearestScan.getUserCoordX(), nearestScan.getUserCoordY(), 130.0);
 	}
 }

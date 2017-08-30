@@ -38,6 +38,7 @@ public class ScanJDBCDAO implements ScanDAO {
 			builder.geomagneticFieldResolution(rs.getDouble("geomag_res"));
 			builder.userCoordinates(rs.getDouble("coord_x"), rs.getDouble("coord_y"));
 			builder.mapId(rs.getInt("map_id"));
+			builder.projectId(rs.getInt("project_id"));
 			builder.wifiScanId(rs.getLong("wifi_scan_id"));
 
 			return builder.build();
