@@ -34,29 +34,6 @@ public class ScanServiceImpl implements ScanService {
 		return scan;
 	}
 
-	public Project saveProject (String projectName) {
-		Project p = projectDAO.getProjectByName(projectName);
-		if (p != null)
-			return p;
-		return projectDAO.createProject(projectName);
-	}
-
-	public SMap saveMap (long projectId, String mapName) {
-		Project p = projectDAO.getProjectById(projectId);
-		if (p == null)
-			return null; // Project did not exist
-
-		SMap existing = mapDAO.getMapByName(projectId, mapName);
-		if (existing != null)
-			return existing;
-
-		return mapDAO.createMap(projectId, mapName);
-	}
-
-	public List<SMap> getMapsInProject(long id) {
-		return mapDAO.getMapsByProjectId(id);
-	}
-
 	public List<Scan> getScansForMapId (long mapId) {
 		List<Scan> scans = scanDAO.getAllScansByMapId(mapId);
 		for (Scan s: scans) {
@@ -82,10 +59,6 @@ public class ScanServiceImpl implements ScanService {
 		}
 
 		return scans;
-	}
-
-	public SMap getMapByName (long projectId, String name) {
-		return mapDAO.getMapByName(projectId, name);
 	}
 
 }

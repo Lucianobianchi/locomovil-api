@@ -4,6 +4,7 @@ import tp.locomovil.model.Project;
 import tp.locomovil.model.SMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,16 +18,19 @@ public class ProjectDTO {
 
 	private List<MapDTO> maps;
 
+	private URI uri;
+
 	public ProjectDTO() {
 	}
 
-	public ProjectDTO(Project p, List<SMap> maps) {
+	public ProjectDTO(Project p, List<SMap> maps, URI baseUri) {
 		this.name = p.getName();
 		this.id = p.getId();
+		this.uri = baseUri.resolve("projects/" + this.id);
 
 		this.maps = new LinkedList<MapDTO>();
 		for (SMap m : maps) {
-			this.maps.add(new MapDTO(m));
+			this.maps.add(new MapDTO(m, this.id, this.uri));
 		}
 	}
 

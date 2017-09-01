@@ -40,7 +40,9 @@ public class LocationController {
 		List<Scan> calibrationScans = scanService.getScansForMapId(f.getMapId());
 		Location approximateLocation = locationService.getApproximateLocation(queryScan, calibrationScans);
 
-		// FIXME: Puede romper acá si no tenía calibraciones y le devolvió Location = null
+		if (approximateLocation == null)
+			return Response.status(Response.Status.NOT_FOUND).build();
+
 		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
 	}
 
@@ -51,7 +53,7 @@ public class LocationController {
 		Scan queryScan = f.toScan();
 		List<Scan> calibrationScans = scanService.getScansForProjectId(queryScan.getProjectId());
 		if (calibrationScans.isEmpty())
-			return Response.status(404).build(); // TODO: ver que mandar
+			return Response.status(Response.Status.NOT_FOUND).build();
 
 		Location approximateLocation = locationService.getApproximateLocation(queryScan, calibrationScans);
 		return Response.ok().entity(new LocationDTO(approximateLocation)).build();

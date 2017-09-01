@@ -10,17 +10,10 @@ import java.util.List;
 public interface ScanService {
 	Scan saveScan(Scan scan);
 
-	Project saveProject(String projectName);
-
-	SMap saveMap(long projectId, String mapName);
-
 	List<Scan> getScansForLocation (long mapId, Location location);
 
 	List<Scan> getScansForMapId (long mapId);
 
 	List<Scan> getScansForProjectId (long projectId);
 
-	List<SMap> getMapsInProject(long id);
-
-	SMap getMapByName (long projectId, String name);
 }

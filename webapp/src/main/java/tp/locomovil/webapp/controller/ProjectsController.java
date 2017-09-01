@@ -4,6 +4,7 @@ package tp.locomovil.webapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tp.locomovil.inter.LocationService;
+import tp.locomovil.inter.ProjectMapService;
 import tp.locomovil.inter.ScanService;
 import tp.locomovil.model.Project;
 import tp.locomovil.model.SMap;
@@ -26,10 +27,7 @@ import java.util.List;
 @Produces(value = {MediaType.APPLICATION_JSON})
 public class ProjectsController {
 	@Autowired
-	private LocationService locationService;
-
-	@Autowired
-	private ScanService scanService;
+	private ProjectMapService projectMapService;
 
 	@Context
 	private UriInfo uriContext;
@@ -39,30 +37,50 @@ public class ProjectsController {
 	public Response putProject (final FormProject project) {
 		final String name = project.getName();
 
-		Project existingProject = scanService.saveProject(name);
+		Project existingProject = projectMapService.saveProject(name);
 		if (existingProject != null) {
-			List<SMap> maps = scanService.getMapsInProject(existingProject.getId());
-			return Response.ok(uriContext.getBaseUri()).entity(new ProjectDTO(existingProject, maps)).build();
+			List<SMap> maps = projectMapService.getMapsInProject(existingProject.getId());
+			return Response.ok(uriContext.getBaseUri())
+					.entity(new ProjectDTO(existingProject, maps, uriContext.getBaseUri())).build();
 		}
 
-		Project newProject = scanService.saveProject(name);
+		Project newProject = projectMapService.saveProject(name);
 
 		// TODO location URI bien
-		return Response.created(uriContext.getBaseUri()).entity(new ProjectDTO(newProject, new ArrayList<SMap>())).build();
+		return Response.created(uriContext.getBaseUri())
+				.entity(new ProjectDTO(newProject, new ArrayList<SMap>(), uriContext.getBaseUri())).build();
+	}
+
+	@GET
+	@Path("/{project_id}")
+	public Response getProjectById(@PathParam("project_id") long projectId) {
+		Project p = projectMapService.getProjectById(projectId);
+		List<SMap> maps = projectMapService.getMapsInProject(p.getId());
+		if (p == null)
+			return Response.status(Response.Status.NOT_FOUND).build();
+		else
+			return Response.ok(new ProjectDTO(p, maps, uriContext.getBaseUri())).build();
+	}
+
+	@GET
+	@Path("/{project_id}/maps/{map_id}")
+	public Response getMapById(@PathParam("project_id") long projectId, @PathParam("map_id") long mapId) {
+		//TODO
+		return Response.noContent().build();
 	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{project_id}/maps")
 	public Response putMap (@PathParam("project_id") long projectId, final FormMap formMap) {
-		SMap map = scanService.saveMap(projectId, formMap.getName());
+		SMap map = projectMapService.saveMap(projectId, formMap.getName());
 
 		if (map == null) {
-			// FIXME: error, el proyecto no existía
-			return Response.ok().build();
+			return Response.noContent().build();
 		}
 
 		// TODO location URI bien
-		return Response.created(uriContext.getBaseUri()).entity(new MapDTO(map)).build();
+		return Response.created(uriContext.getBaseUri())
+				.entity(new MapDTO(map, projectId, uriContext.getBaseUri())).build();
 	}
 }

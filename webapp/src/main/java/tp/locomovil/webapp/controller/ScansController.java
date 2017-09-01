@@ -25,15 +25,12 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 @Produces(value = {MediaType.APPLICATION_JSON})
 public class ScansController {
 	@Autowired
-	private LocationService locationService;
-
-	@Autowired
 	private ScanService scanService;
 
 	@Context
 	private UriInfo uriContext;
 
-	// TODO
+	// TODO si es que lo necesitamos
 //	@GET
 //	@Path("/{id}")
 //	public Response getScansByLocation(@PathParam("id") long mapId,
