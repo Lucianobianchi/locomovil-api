@@ -39,6 +39,8 @@ public class LocationController {
 		Scan queryScan = f.toScan();
 		List<Scan> calibrationScans = scanService.getScansForMapId(f.getMapId());
 		Location approximateLocation = locationService.getApproximateLocation(queryScan, calibrationScans);
+
+		// FIXME: Puede romper acá si no tenía calibraciones y le devolvió Location = null
 		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
 	}
 
