@@ -37,7 +37,7 @@ public class LocationController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getLocationByMap(final FormScan f) {
 		Scan queryScan = f.toScan();
-		List<Scan> calibrationScans = scanService.getScansForProjectId(f.getProjectId());
+		List<Scan> calibrationScans = scanService.getScansForMapId(f.getMapId());
 		Location approximateLocation = locationService.getApproximateLocation(queryScan, calibrationScans);
 		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
 	}
@@ -47,7 +47,10 @@ public class LocationController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getLocationByProject(final FormScan f) {
 		Scan queryScan = f.toScan();
-		List<Scan> calibrationScans = scanService.getScansForMapId(queryScan.getMapId());
+		List<Scan> calibrationScans = scanService.getScansForProjectId(queryScan.getProjectId());
+		if (calibrationScans.isEmpty())
+			return Response.status(404).build(); // TODO: ver que mandar
+
 		Location approximateLocation = locationService.getApproximateLocation(queryScan, calibrationScans);
 		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
 	}

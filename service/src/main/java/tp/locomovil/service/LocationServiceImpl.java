@@ -27,9 +27,12 @@ public class LocationServiceImpl implements LocationService {
 	private ScanService scanService;
 	
 	public Location getApproximateLocation(Scan queryScan, List<Scan> calibrationScans) {
-		int maxCoincidences = 0;
+		if (calibrationScans.isEmpty())
+			return null;
 
+		int maxCoincidences = 0;
 		double minDistance = Double.MAX_VALUE;
+
 		Scan nearestScan = calibrationScans.get(0);
 
 		List<WifiData> queryWifis = queryScan.getWifis();

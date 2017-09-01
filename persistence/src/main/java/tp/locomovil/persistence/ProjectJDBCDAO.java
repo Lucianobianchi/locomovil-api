@@ -37,7 +37,7 @@ public class ProjectJDBCDAO implements ProjectDAO {
 
 	public Project createProject (String name) {
 		if (name == null)
-			return null;
+			throw new IllegalArgumentException("Null project name");
 
 		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("name", name);
