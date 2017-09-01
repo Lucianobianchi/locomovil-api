@@ -3,9 +3,7 @@ package tp.locomovil.webapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tp.locomovil.inter.LocationService;
-import tp.locomovil.inter.ProjectMapService;
-import tp.locomovil.inter.ScanService;
+import tp.locomovil.inter.service.ProjectMapService;
 import tp.locomovil.model.Project;
 import tp.locomovil.model.SMap;
 import tp.locomovil.webapp.dto.MapDTO;
@@ -19,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Path("/projects")

@@ -3,22 +3,15 @@ package tp.locomovil.webapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tp.locomovil.inter.LocationService;
-import tp.locomovil.inter.ScanService;
-import tp.locomovil.model.Location;
+import tp.locomovil.inter.service.ScanService;
 import tp.locomovil.model.Scan;
-import tp.locomovil.webapp.dto.ScanListDTO;
 import tp.locomovil.webapp.forms.FormScan;
 
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.List;
-
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 @Path("/scans")
 @Component

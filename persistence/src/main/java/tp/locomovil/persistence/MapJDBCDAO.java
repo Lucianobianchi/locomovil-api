@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import tp.locomovil.inter.MapDAO;
+import tp.locomovil.inter.dao.MapDAO;
 import tp.locomovil.model.SMap;
 
 import javax.sql.DataSource;

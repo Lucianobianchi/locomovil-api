@@ -2,7 +2,11 @@ package tp.locomovil.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tp.locomovil.inter.*;
+import tp.locomovil.inter.dao.MapDAO;
+import tp.locomovil.inter.dao.ProjectDAO;
+import tp.locomovil.inter.dao.ScanDAO;
+import tp.locomovil.inter.dao.WifiDAO;
+import tp.locomovil.inter.service.ScanService;
 import tp.locomovil.model.*;
 
 import java.util.List;

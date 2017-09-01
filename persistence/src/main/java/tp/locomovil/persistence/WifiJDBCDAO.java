@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import tp.locomovil.inter.WifiDAO;
+import tp.locomovil.inter.dao.WifiDAO;
 import tp.locomovil.model.Location;
 import tp.locomovil.model.WifiData;
 

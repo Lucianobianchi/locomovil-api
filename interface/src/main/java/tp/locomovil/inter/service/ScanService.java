@@ -1,4 +1,4 @@
-package tp.locomovil.inter;
+package tp.locomovil.inter.service;
 
 import tp.locomovil.model.Location;
 import tp.locomovil.model.Project;

@@ -2,8 +2,8 @@ package tp.locomovil.webapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tp.locomovil.inter.LocationService;
-import tp.locomovil.inter.ScanService;
+import tp.locomovil.inter.service.LocationService;
+import tp.locomovil.inter.service.ScanService;
 import tp.locomovil.model.Location;
 import tp.locomovil.model.Scan;
 import tp.locomovil.webapp.dto.LocationDTO;

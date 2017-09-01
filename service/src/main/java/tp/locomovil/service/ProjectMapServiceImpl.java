@@ -3,9 +3,9 @@ package tp.locomovil.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tp.locomovil.inter.MapDAO;
-import tp.locomovil.inter.ProjectDAO;
-import tp.locomovil.inter.ProjectMapService;
+import tp.locomovil.inter.dao.MapDAO;
+import tp.locomovil.inter.dao.ProjectDAO;
+import tp.locomovil.inter.service.ProjectMapService;
 import tp.locomovil.model.Project;
 import tp.locomovil.model.SMap;
 

@@ -1,4 +1,4 @@
-package tp.locomovil.inter;
+package tp.locomovil.inter.dao;
 
 import tp.locomovil.model.Project;
 import tp.locomovil.model.SMap;
