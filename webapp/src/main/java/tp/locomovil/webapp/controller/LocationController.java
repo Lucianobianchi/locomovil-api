@@ -37,7 +37,7 @@ public class LocationController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getLocationByMap(final FormScan f) {
 		Scan queryScan = f.toScan();
-		List<Scan> calibrationScans = scanService.getScansForMapId(f.getMapId());
+		List<Scan> calibrationScans = scanService.getScansForMapId(queryScan.getMapId());
 		Location approximateLocation = locationService.getApproximateLocation(queryScan, calibrationScans);
 
 		if (approximateLocation == null)

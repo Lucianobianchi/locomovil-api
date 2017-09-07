@@ -23,7 +23,7 @@ public class ScansController {
 	@Context
 	private UriInfo uriContext;
 
-	// TODO si es que lo necesitamos
+// SI lo necesitamos
 //	@GET
 //	@Path("/{id}")
 //	public Response getScansByLocation(@PathParam("id") long mapId,

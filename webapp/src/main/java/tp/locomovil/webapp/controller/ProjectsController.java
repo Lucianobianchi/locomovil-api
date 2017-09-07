@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Path("/projects")
 @Component
@@ -43,20 +44,21 @@ public class ProjectsController {
 
 		Project newProject = projectMapService.saveProject(name);
 
-		// TODO location URI bien
-		return Response.created(uriContext.getBaseUri())
-				.entity(new ProjectDTO(newProject, new ArrayList<SMap>(), uriContext.getBaseUri())).build();
+		ProjectDTO pDTO = new ProjectDTO(newProject, new ArrayList<SMap>(), uriContext.getBaseUri());
+		return Response.created(pDTO.getUri()).entity(pDTO).build();
 	}
 
 	@GET
 	@Path("/{project_id}")
 	public Response getProjectById(@PathParam("project_id") long projectId) {
 		Project p = projectMapService.getProjectById(projectId);
-		List<SMap> maps = projectMapService.getMapsInProject(p.getId());
-		if (p == null)
+		if (p == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
-		else
+		}
+		else {
+			List<SMap> maps = projectMapService.getMapsInProject(p.getId());
 			return Response.ok(new ProjectDTO(p, maps, uriContext.getBaseUri())).build();
+		}
 	}
 
 	@GET
@@ -76,8 +78,7 @@ public class ProjectsController {
 			return Response.noContent().build();
 		}
 
-		// TODO location URI bien
-		return Response.created(uriContext.getBaseUri())
-				.entity(new MapDTO(map, projectId, uriContext.getBaseUri())).build();
+		MapDTO mDTO = new MapDTO(map, projectId, uriContext.getBaseUri());
+		return Response.created(mDTO.getUrl()).entity(mDTO).build();
 	}
 }

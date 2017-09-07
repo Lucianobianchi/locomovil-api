@@ -44,4 +44,12 @@ public class MapDTO {
 	public void setMapId (long mapId) {
 		this.mapId = mapId;
 	}
+
+	public URI getUrl () {
+		return url;
+	}
+
+	public void setUrl (URI url) {
+		this.url = url;
+	}
 }

@@ -40,7 +40,6 @@ public class WifiJDBCDAO implements WifiDAO {
 			.withTableName("wifi_scans");
 	}
 
-	// TODO los valores de retorno de estas cosas no estan muy buenos
 	public void saveWifiData(int wifiScanId, WifiData wifi) {
 		final Map<String, Object> args = new HashMap<String, Object>();
 		args.put("wifi_scan_id", wifiScanId);

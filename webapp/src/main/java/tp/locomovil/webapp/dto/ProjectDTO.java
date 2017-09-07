@@ -57,4 +57,12 @@ public class ProjectDTO {
 	public void setId (long id) {
 		this.id = id;
 	}
+
+	public URI getUri () {
+		return uri;
+	}
+
+	public void setUri (URI uri) {
+		this.uri = uri;
+	}
 }

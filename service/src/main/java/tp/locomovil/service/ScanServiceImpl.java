@@ -27,8 +27,7 @@ public class ScanServiceImpl implements ScanService {
 	private ProjectDAO projectDAO;
 
 	public Scan saveScan(Scan scan) {
-		// TODO: hay que chequear que el scan pertenezca a algún mapa y proyecto existentes, no
-		// dejar que explote todo
+		// TODO: hay que chequear que el scan pertenezca a algún mapa y proyecto existentes, no dejar que explote
 		int wifiId = scanDAO.saveScan(scan);
 
 		for (WifiData w: scan.getWifis()) {

@@ -22,13 +22,24 @@ public class WebConfig {
 
 	@Profile("dev")
 	@Bean
-	public DataSource dataSource() {
+	public DataSource devDataSource () {
 		final SimpleDriverDataSource ds = new SimpleDriverDataSource();
 		ds.setDriverClass(org.postgresql.Driver.class);
 		ds.setUrl("jdbc:postgresql://localhost/locomovil");
 		ds.setUsername("root");
 		ds.setPassword("root");
 		
+		return ds;
+	}
+
+	@Profile("dataset")
+	@Bean
+	public DataSource datasetDataSource () {
+		final SimpleDriverDataSource ds = new SimpleDriverDataSource();
+		ds.setDriverClass(org.postgresql.Driver.class);
+		ds.setUrl("jdbc:postgresql://localhost/dataset-locomovil");
+		ds.setUsername("Bianchi");
+
 		return ds;
 	}
 
