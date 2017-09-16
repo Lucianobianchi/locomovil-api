@@ -8,5 +8,8 @@ import java.util.List;
 
 public interface LocationService {
 
-	Location getApproximateLocation(Scan locationScan, List<Scan> calibrationScans);
+	Location getApproximateLocationNN(Scan locationScan, List<Scan> calibrationScans);
+
+	Location getApproximateLocationKNNAverage(Scan locationScan, List<Scan> calibrationScans, int K);
+
 }

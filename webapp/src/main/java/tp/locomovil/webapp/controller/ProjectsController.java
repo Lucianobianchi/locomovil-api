@@ -1,6 +1,8 @@
 package tp.locomovil.webapp.controller;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tp.locomovil.inter.service.ProjectMapService;
@@ -23,6 +25,8 @@ import java.util.List;
 @Component
 @Produces(value = {MediaType.APPLICATION_JSON})
 public class ProjectsController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProjectsController.class);
+
 	@Autowired
 	private ProjectMapService projectMapService;
 
@@ -50,6 +54,7 @@ public class ProjectsController {
 	@GET
 	@Path("/{project_id}")
 	public Response getProjectById(@PathParam("project_id") long projectId) {
+		LOGGER.info("GET project by id: {}", projectId);
 		Project p = projectMapService.getProjectById(projectId);
 		if (p == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
