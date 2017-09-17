@@ -149,6 +149,7 @@ public class LocationServiceImpl implements LocationService {
 		String projectName = projectDAO.getProjectById(first.getProjectId()).getName();
 		String mapName = mapDAO.getMapById(first.getProjectId(), first.getMapId()).getMapName();
 
+		// Calculate average position between K closest points
 		double x = 0, y = 0;
 		int sumCount = 0;
 		List<Scan> nearestScans = new LinkedList<>();
@@ -162,10 +163,10 @@ public class LocationServiceImpl implements LocationService {
 		x /= sumCount;
 		y /= sumCount;
 
-		// No se, alguna forma algo improvisada de calcular la precisión.
-		double precision = getFarthestDistanceFrom(x, y, nearestScans) / 2;
-		LOGGER.debug("Precision: {}", precision);
-		return new Location(projectName, mapName, x, y, Math.max(80, precision));
+		// precision = distance between estimated position and the farthest point from the K nearest ones
+		double precision = getFarthestDistanceFrom(x, y, nearestScans);
+		LOGGER.debug("X: {}, Y: {}, Precision: {}", x, y, precision);
+		return new Location(projectName, mapName, x, y, precision);
 	}
 
 	private double getFarthestDistanceFrom(double x, double y, List<Scan> scans) {
