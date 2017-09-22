@@ -46,61 +46,6 @@ public class LocationServiceImpl implements LocationService {
 	/**
 	 * An algorithm to get the user location. Given a list of scans (that happened during calibration)
 	 * and a current scan to compare against the calibration, the function returns a location that
-	 * is equal to the location of the calibration scan with the shortest distance to the query scan.
-	 * Distance is measured by Wi-Fi intensity (level), and only the scans that have the most
-	 * coincidences in MAC Addresses are considered in the distance calculation.
-	 * This method could work given all calibration scans related to a certain map, or even for a whole
-	 * project.
-	 * @param queryScan Current scan by the user, to compare against calibrations.
-	 * @param calibrationScans List of scans gathered during calibration.
-	 * @return The approximate location. Returns null if {@param calibrationScans} is empty.
-	 */
-	@Override
-	public Location getApproximateLocationNN(Scan queryScan, List<Scan> calibrationScans) {
-		if (calibrationScans.isEmpty())
-			return null;
-
-		int maxCoincidences = 0;
-		double minDistance = Double.MAX_VALUE;
-
-		Scan nearestScan = calibrationScans.get(0);
-
-		List<WifiData> queryWifis = queryScan.getWifis();
-		queryWifis.sort(LEVEL_SORT);
-
-		for (Scan calibrationScan: calibrationScans) {
-			int coincidences = 0;
-			double auxDistance = 0;
-
-			List<WifiData> calibrationSorted = calibrationScan.getWifis();
-			calibrationSorted.sort(LEVEL_SORT);
-
-			for (WifiData calibrationWifi: calibrationSorted) {
-				int index = queryWifis.indexOf(calibrationWifi);
-				if (index >= 0) {
-					coincidences++;
-					auxDistance += getDistance(queryWifis.get(index), calibrationWifi);
-				}
-				if (coincidences == MAX_COINCIDENCES)
-					break;
-			}
-			if (auxDistance < minDistance && coincidences >= maxCoincidences) {
-				minDistance = auxDistance;
-				maxCoincidences = coincidences;
-				nearestScan = calibrationScan;
-			}
-		}
-
-		String projectName = projectDAO.getProjectById(nearestScan.getProjectId()).getName();
-		String mapName = mapDAO.getMapById(nearestScan.getProjectId(), nearestScan.getMapId()).getMapName();
-
-		//TODO precision
-		return new Location(projectName, mapName, nearestScan.getUserCoordX(), nearestScan.getUserCoordY(), 130.0);
-	}
-
-	/**
-	 * An algorithm to get the user location. Given a list of scans (that happened during calibration)
-	 * and a current scan to compare against the calibration, the function returns a location that
 	 * is the average of K-Nearest-Neighbour scans. Due to the nature of this technique, this
 	 * algorithm only works when using calibration scans of a certain map, it would not make sense
 	 * to calculate averages between scans in different maps.
@@ -166,7 +111,7 @@ public class LocationServiceImpl implements LocationService {
 		// precision = distance between estimated position and the farthest point from the K nearest ones
 		double precision = getFarthestDistanceFrom(x, y, nearestScans);
 		LOGGER.debug("X: {}, Y: {}, Precision: {}", x, y, precision);
-		return new Location(projectName, mapName, x, y, precision);
+		return new Location(projectName, mapName, queryScan.getMACAddress(), x, y, precision);
 	}
 
 	private double getFarthestDistanceFrom(double x, double y, List<Scan> scans) {

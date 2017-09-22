@@ -23,6 +23,8 @@ public class Scan {
 
 	private Long wifiScanId;
 
+	private String MACAddress;
+
 	public Long getWifiScanId () {
 		return wifiScanId;
 	}
@@ -89,6 +91,8 @@ public class Scan {
 		this.projectId = builder.projectId;
 		this.wifis = builder.wifis;
 		this.wifiScanId = builder.wifiScanId;
+
+		this.MACAddress = builder.MACAddress;
 
 	}
 
@@ -252,6 +256,14 @@ public class Scan {
 		this.projectId = projectId;
 	}
 
+	public String getMACAddress () {
+		return MACAddress;
+	}
+
+	public void setMACAddress (String MACAddress) {
+		this.MACAddress = MACAddress;
+	}
+
 	public static class ScanDataBuilder {
 
 		private Double userCoordX, userCoordY;
@@ -271,6 +283,8 @@ public class Scan {
 		List<WifiData> wifis;
 
 		private Long wifiScanId;
+
+		private String MACAddress;
 
 		public ScanDataBuilder geomagneticField(Double X, Double Y, Double Z) {
 			geomagneticX = X;
@@ -348,6 +362,11 @@ public class Scan {
 
 		public ScanDataBuilder wifiScanId(Long id) {
 			this.wifiScanId = id;
+			return this;
+		}
+
+		public ScanDataBuilder MACAddress(String mac) {
+			this.MACAddress = mac;
 			return this;
 		}
 

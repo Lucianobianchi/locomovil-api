@@ -61,6 +61,7 @@ public class ProjectsController {
 		}
 		else {
 			List<SMap> maps = projectMapService.getMapsInProject(p.getId());
+			// FIXME no devuelve la URL del mapa bien porque no pone projectID en el path.
 			return Response.ok(new ProjectDTO(p, maps, uriContext.getBaseUri())).build();
 		}
 	}

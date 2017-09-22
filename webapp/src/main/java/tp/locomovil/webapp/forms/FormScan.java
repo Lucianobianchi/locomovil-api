@@ -9,7 +9,6 @@ import java.util.List;
 
 public class FormScan {
 
-	@NotBlank
 	private Double userCoordX, userCoordY;
 
 	private float[] rotationMatrix;
@@ -19,6 +18,9 @@ public class FormScan {
 		latitude, longitude, altitude, locationResolution;
 
 	private Long deviceMillis, NTPMillis;
+
+	@NotBlank
+	private String MACAddress;
 
 	@NotBlank
 	private Integer mapId;
@@ -191,6 +193,14 @@ public class FormScan {
 		this.projectId = projectId;
 	}
 
+	public String getMACAddress () {
+		return MACAddress;
+	}
+
+	public void setMACAddress (String MACAddress) {
+		this.MACAddress = MACAddress;
+	}
+
 	public Scan toScan () {
 		return buildScan(this);
 	}
@@ -222,6 +232,7 @@ public class FormScan {
 		b.accelerationResolution(f.getAccelerationResolution());
 		b.acceleration(f.getAccelerationX(), f.getAccelerationY(), f.getAccelerationZ());
 		b.wifis(wifis);
+		b.MACAddress(f.getMACAddress());
 
 		return b.build();
 	}

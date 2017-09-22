@@ -39,6 +39,7 @@ public class ScanJDBCDAO implements ScanDAO {
 			builder.mapId(rs.getInt("map_id"));
 			builder.projectId(rs.getInt("project_id"));
 			builder.wifiScanId(rs.getLong("wifi_scan_id"));
+			builder.MACAddress(rs.getString("MAC_ADDRESS"));
 
 			return builder.build();
 		}
@@ -73,6 +74,7 @@ public class ScanJDBCDAO implements ScanDAO {
 		args.put("map_id", scan.getMapId());
 		args.put("project_id", scan.getProjectId());
 		args.put("rotation_matrix", scan.getRotationMatrix());
+		args.put("mac_address", scan.getMACAddress());
 
 		final Number wifiScanId = jdbcInsert.executeAndReturnKey(args);
 

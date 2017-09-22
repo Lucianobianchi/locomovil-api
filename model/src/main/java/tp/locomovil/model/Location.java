@@ -12,11 +12,14 @@ public class Location {
 	private String projectName;
 	private String mapName;
 
+	private String MACAddress;
+
 	public Location (String projectName,
-			String mapName, double XCoordinate, double YCoordinate, double precision) {
+			String mapName, String macAddress, double XCoordinate, double YCoordinate, double precision) {
 		this.XCoordinate = XCoordinate;
 		this.YCoordinate = YCoordinate;
 		this.precision = precision;
+		this.MACAddress = macAddress;
 		this.projectName = projectName;
 		this.mapName = mapName;
 	}
@@ -40,4 +43,7 @@ public class Location {
 	public String getMapName () {
 		return mapName;
 	}
+
+	public String getMACAddress() { return MACAddress; }
+
 }
