@@ -1,5 +1,7 @@
 package tp.locomovil.webapp.config;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -9,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -45,12 +48,17 @@ public class WebConfig {
 
 	@Profile("live")
 	@Bean
-	public DataSource liveDataSource() {
+	public DataSource liveDataSource() throws URISyntaxException {
+		URI dbUri = new URI(System.getenv("DATABASE_URL"));
+
+		String username = dbUri.getUserInfo().split(":")[0];
+		String password = dbUri.getUserInfo().split(":")[1];
+
 		Properties props = new Properties();
 		props.setProperty("ssl", "true");
 		props.setProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
-		props.setProperty("user", "euszfboadbbtlw");
-		props.setProperty("password", "afbadf5a0b55a7a7533ef81ee4fb3b0cdf2a11f58ebd3222f1ace5f2e8b3cc6f");
+		props.setProperty("user", username);
+		props.setProperty("password", password);
 
 		final SimpleDriverDataSource ds = new SimpleDriverDataSource();
 		ds.setDriverClass(org.postgresql.Driver.class);
