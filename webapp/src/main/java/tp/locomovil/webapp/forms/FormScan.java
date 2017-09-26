@@ -22,6 +22,8 @@ public class FormScan {
 	@NotBlank
 	private String MACAddress;
 
+	private String deviceName;
+
 	@NotBlank
 	private Integer mapId;
 
@@ -201,6 +203,14 @@ public class FormScan {
 		this.MACAddress = MACAddress;
 	}
 
+	public String getDeviceName () {
+		return deviceName;
+	}
+
+	public void setDeviceName (String deviceName) {
+		this.deviceName = deviceName;
+	}
+
 	public Scan toScan () {
 		return buildScan(this);
 	}
@@ -233,6 +243,7 @@ public class FormScan {
 		b.acceleration(f.getAccelerationX(), f.getAccelerationY(), f.getAccelerationZ());
 		b.wifis(wifis);
 		b.MACAddress(f.getMACAddress());
+		b.deviceName(f.getDeviceName());
 
 		return b.build();
 	}

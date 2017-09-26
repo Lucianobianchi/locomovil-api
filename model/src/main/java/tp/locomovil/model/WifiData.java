@@ -11,31 +11,16 @@ public class WifiData implements Comparable {
 		this.frequency = builder.frequency;
 	}
 
-	public WifiData() {
-	}
-
-	public String getBSSID() {
+	public String getBSSID () {
 		return BSSID;
 	}
 
-	public Integer getLevel() {
+	public Integer getLevel () {
 		return level;
 	}
 
-	public Integer getFrequency() {
+	public Integer getFrequency () {
 		return frequency;
-	}
-
-	public void setBSSID (String BSSID) {
-		this.BSSID = BSSID;
-	}
-
-	public void setLevel (Integer level) {
-		this.level = level;
-	}
-
-	public void setFrequency (Integer frequency) {
-		this.frequency = frequency;
 	}
 
 	public int compareTo (Object o) {
