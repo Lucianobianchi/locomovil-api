@@ -154,6 +154,10 @@ public class Scan {
 		return deviceName;
 	}
 
+	public void setWifis (List<WifiData> wifis) {
+		this.wifis = wifis;
+	}
+
 	@Override
 	public boolean equals (Object o) {
 		if (this == o)
