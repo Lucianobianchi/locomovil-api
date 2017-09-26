@@ -2,7 +2,6 @@ package tp.locomovil.model;
 
 import java.util.List;
 
-// FIXME quedan acoplados los JSON al modelo en Java pero por ahora lo dejo así
 public class Scan {
 
 	private Double userCoordX, userCoordY;
@@ -25,40 +24,7 @@ public class Scan {
 
 	private String MACAddress;
 
-	public Long getWifiScanId () {
-		return wifiScanId;
-	}
-
-	private void setWifiScanId (Long wifiScanId) {
-		this.wifiScanId = wifiScanId;
-	}
-
-	public Scan() {
-	}
-
-	@Override
-	public boolean equals (Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-
-		Scan scan = (Scan) o;
-
-		if (mapId != null ? !mapId.equals(scan.mapId) : scan.mapId != null)
-			return false;
-		return !(wifiScanId != null ?
-				!wifiScanId.equals(scan.wifiScanId) :
-				scan.wifiScanId != null);
-
-	}
-
-	@Override
-	public int hashCode () {
-		int result = mapId != null ? mapId.hashCode() : 0;
-		result = 31 * result + (wifiScanId != null ? wifiScanId.hashCode() : 0);
-		return result;
-	}
+	private String deviceName;
 
 	private Scan (ScanDataBuilder builder) {
 		// Geomagnetic Field
@@ -93,176 +59,129 @@ public class Scan {
 		this.wifiScanId = builder.wifiScanId;
 
 		this.MACAddress = builder.MACAddress;
-
+		this.deviceName = builder.deviceName;
 	}
 
-	public Integer getMapId() {
-		return mapId;
-	}
-
-	public Long getDeviceMillis() {
-		return deviceMillis;
-	}
-
-	public Long getNTPMillis() {
-		return NTPMillis;
-	}
-
-	public Double getUserCoordX() {
+	public Double getUserCoordX () {
 		return userCoordX;
 	}
 
-	public Double getUserCoordY() {
+	public Double getUserCoordY () {
 		return userCoordY;
 	}
 
-	public float[] getRotationMatrix() {
+	public float[] getRotationMatrix () {
 		return rotationMatrix;
 	}
 
-	public Double getGeomagneticX() {
+	public Double getGeomagneticX () {
 		return geomagneticX;
 	}
 
-	public Double getGeomagneticY() {
+	public Double getGeomagneticY () {
 		return geomagneticY;
 	}
 
-	public Double getGeomagneticZ() {
+	public Double getGeomagneticZ () {
 		return geomagneticZ;
 	}
 
-	public Double getGeomagneticResolution() {
+	public Double getGeomagneticResolution () {
 		return geomagneticResolution;
 	}
 
-	public Double getAccelerationX() {
+	public Double getAccelerationX () {
 		return accelerationX;
 	}
 
-	public Double getAccelerationY() {
+	public Double getAccelerationY () {
 		return accelerationY;
 	}
 
-	public Double getAccelerationZ() {
+	public Double getAccelerationZ () {
 		return accelerationZ;
 	}
 
-	public Double getAccelerationResolution() {
+	public Double getAccelerationResolution () {
 		return accelerationResolution;
 	}
 
-	public Double getLatitude() {
+	public Double getLatitude () {
 		return latitude;
 	}
 
-	public Double getLongitude() {
+	public Double getLongitude () {
 		return longitude;
 	}
 
-	public Double getAltitude() {
+	public Double getAltitude () {
 		return altitude;
 	}
 
-	public Double getLocationResolution() {
+	public Double getLocationResolution () {
 		return locationResolution;
 	}
 
-	public List<WifiData> getWifis () {
-		return wifis;
+	public Long getDeviceMillis () {
+		return deviceMillis;
 	}
 
-	private void setUserCoordX (Double userCoordX) {
-		this.userCoordX = userCoordX;
+	public Long getNTPMillis () {
+		return NTPMillis;
 	}
 
-	private void setUserCoordY (Double userCoordY) {
-		this.userCoordY = userCoordY;
-	}
-
-	private void setRotationMatrix (float[] rotationMatrix) {
-		this.rotationMatrix = rotationMatrix;
-	}
-
-	private void setGeomagneticX (Double geomagneticX) {
-		this.geomagneticX = geomagneticX;
-	}
-
-	private void setGeomagneticY (Double geomagneticY) {
-		this.geomagneticY = geomagneticY;
-	}
-
-	private void setGeomagneticZ (Double geomagneticZ) {
-		this.geomagneticZ = geomagneticZ;
-	}
-
-	private void setGeomagneticResolution (Double geomagneticResolution) {
-		this.geomagneticResolution = geomagneticResolution;
-	}
-
-	private void setAccelerationX (Double accelerationX) {
-		this.accelerationX = accelerationX;
-	}
-
-	private void setAccelerationY (Double accelerationY) {
-		this.accelerationY = accelerationY;
-	}
-
-	private void setAccelerationZ (Double accelerationZ) {
-		this.accelerationZ = accelerationZ;
-	}
-
-	private void setAccelerationResolution (Double accelerationResolution) {
-		this.accelerationResolution = accelerationResolution;
-	}
-
-	private void setLatitude (Double latitude) {
-		this.latitude = latitude;
-	}
-
-	private void setLongitude (Double longitude) {
-		this.longitude = longitude;
-	}
-
-	private void setAltitude (Double altitude) {
-		this.altitude = altitude;
-	}
-
-	private void setLocationResolution (Double locationResolution) {
-		this.locationResolution = locationResolution;
-	}
-
-	private void setDeviceMillis (Long deviceMillis) {
-		this.deviceMillis = deviceMillis;
-	}
-
-	private void setNTPMillis (Long NTPMillis) {
-		this.NTPMillis = NTPMillis;
-	}
-
-	private void setMapId (Integer mapId) {
-		this.mapId = mapId;
-	}
-
-	public void setWifis (List<WifiData> wifis) {
-		this.wifis = wifis;
+	public Integer getMapId () {
+		return mapId;
 	}
 
 	public Integer getProjectId () {
 		return projectId;
 	}
 
-	public void setProjectId (Integer projectId) {
-		this.projectId = projectId;
+	public List<WifiData> getWifis () {
+		return wifis;
+	}
+
+	public Long getWifiScanId () {
+		return wifiScanId;
 	}
 
 	public String getMACAddress () {
 		return MACAddress;
 	}
 
-	public void setMACAddress (String MACAddress) {
-		this.MACAddress = MACAddress;
+	public String getDeviceName () {
+		return deviceName;
 	}
+
+	public void setWifis (List<WifiData> wifis) {
+		this.wifis = wifis;
+	}
+
+	@Override
+	public boolean equals (Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		Scan scan = (Scan) o;
+
+		if (mapId != null ? !mapId.equals(scan.mapId) : scan.mapId != null)
+			return false;
+		return !(wifiScanId != null ?
+				!wifiScanId.equals(scan.wifiScanId) :
+				scan.wifiScanId != null);
+
+	}
+
+	@Override
+	public int hashCode () {
+		int result = mapId != null ? mapId.hashCode() : 0;
+		result = 31 * result + (wifiScanId != null ? wifiScanId.hashCode() : 0);
+		return result;
+	}
+
 
 	public static class ScanDataBuilder {
 
@@ -285,6 +204,8 @@ public class Scan {
 		private Long wifiScanId;
 
 		private String MACAddress;
+
+		private String deviceName;
 
 		public ScanDataBuilder geomagneticField(Double X, Double Y, Double Z) {
 			geomagneticX = X;
@@ -367,6 +288,11 @@ public class Scan {
 
 		public ScanDataBuilder MACAddress(String mac) {
 			this.MACAddress = mac;
+			return this;
+		}
+
+		public ScanDataBuilder deviceName(String name) {
+			this.deviceName = name;
 			return this;
 		}
 
