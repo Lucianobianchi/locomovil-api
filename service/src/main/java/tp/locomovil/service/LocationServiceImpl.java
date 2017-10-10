@@ -143,5 +143,4 @@ public class LocationServiceImpl implements LocationService {
 			return this.distance - o.distance < 0 ? -1 : 1;
 		}
 	}
-
 }

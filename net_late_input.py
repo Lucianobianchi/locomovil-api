@@ -59,7 +59,7 @@ def load_data(file_name):
 			if index > 3000:
 				csvfile.close()
 				return x,y
-				
+
 		csvfile.close()
 
 	return x, y, aux_in
@@ -84,8 +84,8 @@ def load_train(file_name):
 				index = index + 1
 
 			x = np.append(x,np.array(x_aux).reshape((1,input_len)), axis = 0)
-			
-				
+
+
 		csvfile.close()
 
 	return x
@@ -99,20 +99,10 @@ print(model.predict([guess,aux]))
 
 
 print(" expected")
-print( y)
-i = 0 
+print(y)
+i = 0
 j = 0
-for x in model.predict([guess,aux]):
-	print(x - y[i])
-	i = i + 1
-	j = j + 1
-
-
-
-
-
-
-
-
-
-
+# for x in model.predict([guess,aux]):
+# 	print(x - y[i])
+# 	i = i + 1
+# 	j = j + 1
