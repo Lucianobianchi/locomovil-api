@@ -41,8 +41,7 @@ public class LocationController {
 		Scan queryScan = f.toScan();
 
 		long start = System.currentTimeMillis();
-		List<Scan> calibrationScans = scanService.getScansForMapId(queryScan.getMapId());
-		Location approximateLocation = locationService.getApproximateLocationKNNAverage(queryScan, calibrationScans, K);
+		Location approximateLocation = locationService.getLocationByMapKNNAverage(queryScan, K);
 		long end = System.currentTimeMillis();
 
 		LOGGER.info("Finished getLocationByMapKNNAverage in: {} millis", end - start);
@@ -56,15 +55,16 @@ public class LocationController {
 	@Path("/project")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getLocationByProject(final FormScan f) {
+		// TODO: pedir queryparam K
+		int K = 4;
 		Scan queryScan = f.toScan();
 
 		long start = System.currentTimeMillis();
-		List<Scan> calibrationScans = scanService.getScansForProjectId(queryScan.getProjectId());
-		if (calibrationScans.isEmpty())
-			return Response.status(Response.Status.NOT_FOUND).build();
-
-		Location approximateLocation = locationService.getApproximateLocationKNNAverage(queryScan, calibrationScans, 1);
+		Location approximateLocation = locationService.getLocationByProjectKNNAverage(queryScan,  K);
 		long end = System.currentTimeMillis();
+
+		if (approximateLocation == null)
+			return Response.status(Response.Status.NOT_FOUND).build();
 
 		LOGGER.info("Finished getLocationByProject in: {} millis", end - start);
 		return Response.ok().entity(new LocationDTO(approximateLocation)).build();

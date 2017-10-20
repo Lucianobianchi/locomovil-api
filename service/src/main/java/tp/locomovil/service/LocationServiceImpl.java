@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 @Service
 public class LocationServiceImpl implements LocationService {
@@ -38,23 +39,45 @@ public class LocationServiceImpl implements LocationService {
 	@Autowired
 	private ScanService scanService;
 
-	private static final int MAX_COINCIDENCES = 6;
+	private static final int MAX_COINCIDENCES = 5;
+	private static final int STRONGEST_AP_NUMBER = 5;
 
 	// Lower level is stronger so this sorts signals from strongest to weakest
 	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o1.getLevel() - o2.getLevel();
 
-	/**
-	 * An algorithm to get the user location. Given a list of scans (that happened during calibration)
-	 * and a current scan to compare against the calibration, the function returns a location that
-	 * is the average of K-Nearest-Neighbour scans. Due to the nature of this technique, this
-	 * algorithm only works when using calibration scans of a certain map, it would not make sense
-	 * to calculate averages between scans in different maps.
-	 * @param queryScan Current scan by the user, to compare against calibrations.
-	 * @param calibrationScans List of scans gathered during calibration.
-	 * @return The approximate location. Returns null if {@param calibrationScans} is empty.
-	 */
 	@Override
-	public Location getApproximateLocationKNNAverage (Scan queryScan,
+	public Location getLocationByMapKNNAverage (Scan queryScan, int K) {
+		List<Scan> calibrationScans = scanService.getScansForMapId(queryScan.getMapId());
+		return getLocationKNNAverage(queryScan, calibrationScans, K);
+	}
+
+	@Override
+	public Location getLocationByProjectKNNAverage (Scan queryScan, int K) {
+		List<Scan> calibrationScans = scanService.getScansForProjectId(queryScan.getProjectId());
+		return getLocationKNNAverage(queryScan, calibrationScans, K);
+	}
+
+	@Override
+	public Location getLocationMultiLayer (Scan queryScan) {
+		List<WifiData> wifis = queryScan.getWifis();
+		wifis = wifis.stream().sorted(LEVEL_SORT).limit(STRONGEST_AP_NUMBER).collect(Collectors.toList());
+		return getLocationMultiLayer(wifis);
+	}
+
+	// Mock -> sin neural nets
+	private Location getLocationMultiLayer(List<WifiData> strongestAPs) {
+		Scan mockScan = new Scan.ScanDataBuilder().wifis(strongestAPs).build();
+		return getLocationByMapKNNAverage(mockScan, 4);
+	}
+
+	// Mock -> sin neural nets
+	private Location getLocationMultiLayerNeural(List<WifiData> strongestAPs) {
+		Scan mockScan = new Scan.ScanDataBuilder().wifis(strongestAPs).build();
+		return getLocationByMapKNNAverage(mockScan, 4);
+	}
+
+
+	private Location getLocationKNNAverage (Scan queryScan,
 			List<Scan> calibrationScans, int K) {
 		if (calibrationScans.isEmpty())
 			return null;
@@ -110,7 +133,6 @@ public class LocationServiceImpl implements LocationService {
 
 		// precision = distance between estimated position and the farthest point from the K nearest ones
 		double precision = getFarthestDistanceFrom(x, y, nearestScans);
-		LOGGER.debug("X: {}, Y: {}, Precision: {}", x, y, precision);
 		return new Location(projectName, mapName, queryScan.getMACAddress(), x, y, precision);
 	}
 
