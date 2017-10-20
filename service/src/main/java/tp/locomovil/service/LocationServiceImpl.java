@@ -1,19 +1,22 @@
 package tp.locomovil.service;
 
+import org.deeplearning4j.nn.api.NeuralNetwork;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.util.ModelSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tp.locomovil.inter.dao.MapDAO;
-import tp.locomovil.inter.dao.ProjectDAO;
-import tp.locomovil.inter.dao.ScanDAO;
-import tp.locomovil.inter.dao.WifiDAO;
+import tp.locomovil.inter.dao.*;
 import tp.locomovil.inter.service.LocationService;
 import tp.locomovil.inter.service.ScanService;
 import tp.locomovil.model.Location;
 import tp.locomovil.model.Scan;
 import tp.locomovil.model.WifiData;
+import tp.locomovil.model.WifiNeuralNet;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +38,9 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private MapDAO mapDAO;
+
+	@Autowired
+	private NeuralNetDAO neuralNetDAO;
 
 	@Autowired
 	private ScanService scanService;
@@ -70,12 +76,13 @@ public class LocationServiceImpl implements LocationService {
 		return getLocationByMapKNNAverage(mockScan, 4);
 	}
 
-	// Mock -> sin neural nets
 	private Location getLocationMultiLayerNeural(List<WifiData> strongestAPs) {
-		Scan mockScan = new Scan.ScanDataBuilder().wifis(strongestAPs).build();
-		return getLocationByMapKNNAverage(mockScan, 4);
+		WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(strongestAPs);
+		// net predict with APs
+		double x = 10.234;
+		double y = 83.394;
+		return new Location(net.getProjectName(), net.getMapName(), "Macaddrr", x, y, x/y);
 	}
-
 
 	private Location getLocationKNNAverage (Scan queryScan,
 			List<Scan> calibrationScans, int K) {
