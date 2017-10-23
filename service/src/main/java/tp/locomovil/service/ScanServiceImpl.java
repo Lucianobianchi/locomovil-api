@@ -6,6 +6,7 @@ import tp.locomovil.inter.dao.*;
 import tp.locomovil.inter.service.ScanService;
 import tp.locomovil.model.*;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,14 @@ public class ScanServiceImpl implements ScanService {
 	private static final int STRONGEST_AP_NUMBER = 5;
 
 	public Scan saveScan(Scan scan) {
+		List<WifiData> wifis = scan.getWifis().stream()
+				.sorted(LEVEL_SORT).limit(STRONGEST_AP_NUMBER).collect(Collectors.toList());
+
+		WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(wifis);
+		if (net == null)
+			// net = neuralNetDAO.createNetForAPs(wifis);
+		net.train(Arrays.asList(scan));
+
 		// TODO: hay que chequear que el scan pertenezca a algún mapa y proyecto existentes, no dejar que explote
 		int wifiId = scanDAO.saveScan(scan);
 
@@ -40,12 +49,6 @@ public class ScanServiceImpl implements ScanService {
 			wifiDAO.saveWifiData(wifiId, w);
 		}
 
-		List<WifiData> wifis = scan.getWifis().stream()
-				.sorted(LEVEL_SORT).limit(STRONGEST_AP_NUMBER).collect(Collectors.toList());
-
-		WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(wifis);
-		if (net == null)
-//			neuralNetDAO.save
 		return scan;
 	}
 
