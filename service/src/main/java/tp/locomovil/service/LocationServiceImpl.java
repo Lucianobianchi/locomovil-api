@@ -3,6 +3,8 @@ package tp.locomovil.service;
 import org.deeplearning4j.nn.api.NeuralNetwork;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.util.ModelSerializer;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,7 @@ import tp.locomovil.model.WifiNeuralNet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +44,7 @@ public class LocationServiceImpl implements LocationService {
 	@Autowired
 	private ScanService scanService;
 
+	// TODO: Al archivo de configuracion
 	private static final int MAX_COINCIDENCES = 5;
 	private static final int STRONGEST_AP_NUMBER = 5;
 
@@ -77,11 +77,14 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	private Location getLocationMultiLayerNeural(List<WifiData> strongestAPs) {
-		WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(strongestAPs);
-		// net predict with APs
-		double x = 10.234;
-		double y = 83.394;
-		return new Location(net.getProjectName(), net.getMapName(), "Macaddrr", x, y, x/y);
+		// Si con los N mas fuertes no hay ninguna red, pruebo con N-1.
+		for (int i = strongestAPs.size(); i > 0; i--) {
+			List<WifiData> wifis = strongestAPs.subList(0, i);
+			WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(strongestAPs);
+			if (net != null)
+				return net.getLocationForWifis(strongestAPs);
+		}
+		return null;
 	}
 
 	private Location getLocationKNNAverage (Scan queryScan,
