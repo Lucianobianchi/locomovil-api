@@ -18,4 +18,9 @@ public class NeuralNetMockDAO implements NeuralNetDAO {
 	public WifiNeuralNet createNetworkForAPs (int projectId, int mapId, List<WifiData> APs) {
 		return null;
 	}
+
+	@Override
+	public WifiNeuralNet updateNetworkWithId (int id, WifiNeuralNet net) {
+		return null;
+	}
 }

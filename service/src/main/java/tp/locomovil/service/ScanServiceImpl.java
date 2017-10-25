@@ -6,6 +6,7 @@ import tp.locomovil.inter.dao.*;
 import tp.locomovil.inter.service.ScanService;
 import tp.locomovil.model.*;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,7 +42,9 @@ public class ScanServiceImpl implements ScanService {
 		WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(wifis);
 		if (net == null)
 			net = neuralNetDAO.createNetworkForAPs(scan.getProjectId(), scan.getMapId(), wifis);
+
 		net.train(Collections.singletonList(scan));
+		neuralNetDAO.saveNetwork(net);
 
 		// TODO: hay que chequear que el scan pertenezca a algún mapa y proyecto existentes, no dejar que explote
 		int wifiId = scanDAO.saveScan(scan);
