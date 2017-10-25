@@ -47,7 +47,7 @@ public class ProjectsController {
 
 		Project newProject = projectMapService.saveProject(name);
 
-		ProjectDTO pDTO = new ProjectDTO(newProject, new ArrayList<SMap>(), uriContext.getBaseUri());
+		ProjectDTO pDTO = new ProjectDTO(newProject, new ArrayList<>(), uriContext.getBaseUri());
 		return Response.created(pDTO.getUri()).entity(pDTO).build();
 	}
 

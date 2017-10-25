@@ -28,7 +28,7 @@ public class ProjectDTO {
 		this.id = p.getId();
 		this.uri = baseUri.resolve("projects/" + this.id);
 
-		this.maps = new LinkedList<MapDTO>();
+		this.maps = new LinkedList<>();
 		for (SMap m : maps) {
 			this.maps.add(new MapDTO(m, this.id, this.uri));
 		}

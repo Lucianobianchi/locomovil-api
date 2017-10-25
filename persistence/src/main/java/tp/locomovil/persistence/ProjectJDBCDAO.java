@@ -20,11 +20,8 @@ public class ProjectJDBCDAO implements ProjectDAO {
 	private JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert jdbcInsert;
 
-	private final static RowMapper<Project> ROW_MAPPER = new RowMapper<Project>() {
-		public Project mapRow (ResultSet rs, int rowNum) throws SQLException {
-			return new Project(rs.getString("name"), rs.getLong("project_id"));
-		}
-	};
+	private final static RowMapper<Project> ROW_MAPPER =
+			(rs, rowNum) -> new Project(rs.getString("name"), rs.getLong("project_id"));
 
 	@Autowired
 	public ProjectJDBCDAO (DataSource ds) {
@@ -38,7 +35,7 @@ public class ProjectJDBCDAO implements ProjectDAO {
 		if (name == null)
 			throw new IllegalArgumentException("Null project name");
 
-		Map<String, Object> args = new HashMap<String, Object>();
+		Map<String, Object> args = new HashMap<>();
 		args.put("name", name);
 
 		final Number projectId = jdbcInsert.executeAndReturnKey(args);

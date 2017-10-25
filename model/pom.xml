@@ -7,7 +7,6 @@
     <artifactId>root-locomovil</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <groupId>tp.locomovil</groupId>
   <artifactId>model</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>model</name>

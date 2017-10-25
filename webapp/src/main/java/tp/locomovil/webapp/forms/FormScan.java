@@ -217,7 +217,7 @@ public class FormScan {
 
 	private static Scan buildScan(FormScan f) {
 		final Scan.ScanDataBuilder b = new Scan.ScanDataBuilder();
-		final List<WifiData> wifis = new LinkedList<WifiData>();
+		final List<WifiData> wifis = new LinkedList<>();
 
 		if (f.getWifis() != null) {
 			for (FormWifi w: f.getWifis()) {

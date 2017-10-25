@@ -8,4 +8,6 @@ import java.util.List;
 public interface NeuralNetDAO {
 
 	WifiNeuralNet getNetworkForAPs(List<WifiData> APs);
+
+	WifiNeuralNet createNetworkForAPs(int projectId, int mapId, List<WifiData> APs);
 }

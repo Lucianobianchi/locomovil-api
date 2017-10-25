@@ -22,15 +22,13 @@ public class WifiJDBCDAO implements WifiDAO {
 
 	private final SimpleJdbcInsert jdbcInsert;
 
-	private final static RowMapper<WifiData> ROW_MAPPER = new RowMapper<WifiData>() {
-		public WifiData mapRow (ResultSet rs, int rowNum) throws SQLException {
-			WifiData.WifiDataBuilder builder = new WifiData.WifiDataBuilder();
-			builder.bssid(rs.getString("bssid"));
-			builder.level(rs.getInt("level"));
-			builder.frequency(rs.getInt("frequency"));
+	private final static RowMapper<WifiData> ROW_MAPPER = (rs, rowNum) -> {
+		WifiData.WifiDataBuilder builder = new WifiData.WifiDataBuilder();
+		builder.bssid(rs.getString("bssid"));
+		builder.level(rs.getInt("level"));
+		builder.frequency(rs.getInt("frequency"));
 
-			return builder.build();
-		}
+		return builder.build();
 	};
 
 	@Autowired
@@ -41,7 +39,7 @@ public class WifiJDBCDAO implements WifiDAO {
 	}
 
 	public void saveWifiData(int wifiScanId, WifiData wifi) {
-		final Map<String, Object> args = new HashMap<String, Object>();
+		final Map<String, Object> args = new HashMap<>();
 		args.put("wifi_scan_id", wifiScanId);
 		args.put("bssid", wifi.getBSSID());
 		args.put("level", wifi.getLevel());

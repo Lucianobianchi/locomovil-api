@@ -20,11 +20,8 @@ public class MapJDBCDAO implements MapDAO {
 	private JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert jdbcInsert;
 
-	private final static RowMapper<SMap> ROW_MAPPER = new RowMapper<SMap>() {
-		public SMap mapRow (ResultSet rs, int rowNum) throws SQLException {
-			return new SMap(rs.getString("name"), rs.getLong("map_id"));
-		}
-	};
+	private final static RowMapper<SMap> ROW_MAPPER =
+			(rs, rowNum) -> new SMap(rs.getString("name"), rs.getLong("map_id"));
 
 	@Autowired
 	public MapJDBCDAO (DataSource ds) {
@@ -38,7 +35,7 @@ public class MapJDBCDAO implements MapDAO {
 		if (name == null)
 			return null;
 
-		Map<String, Object> args = new HashMap<String, Object>();
+		Map<String, Object> args = new HashMap<>();
 		args.put("name", name);
 		args.put("project_id", projectId);
 

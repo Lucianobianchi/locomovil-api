@@ -25,11 +25,11 @@ public class WifiNeuralNet {
 	// Lower level is stronger so this sorts signals from strongest to weakest
 	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o1.getLevel() - o2.getLevel();
 
-	public WifiNeuralNet (String projectName, String mapName, String saveFile, MultiLayerNetwork network) {
+	public WifiNeuralNet (String projectName, String mapName, String saveFile) throws IOException {
 		this.projectName = projectName;
 		this.mapName = mapName;
 		this.saveFile = saveFile;
-		this.network = network;
+		this.network = ModelSerializer.restoreMultiLayerNetwork(saveFile);
 	}
 
 	public String getProjectName () {

@@ -22,27 +22,25 @@ public class ScanJDBCDAO implements ScanDAO {
 	private JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert jdbcInsert;
 
-	private final static RowMapper<Scan> ROW_MAPPER = new RowMapper<Scan>() {
-		public Scan mapRow (ResultSet rs, int rowNum) throws SQLException {
-			Scan.ScanDataBuilder builder = new Scan.ScanDataBuilder();
+	private final static RowMapper<Scan> ROW_MAPPER = (rs, rowNum) -> {
+		Scan.ScanDataBuilder builder = new Scan.ScanDataBuilder();
 //			builder.rotationMatrix() TODO
-			builder.NTPMillis(rs.getLong("ntp_time"));
-			builder.deviceMillis(rs.getLong("device_time"));
+		builder.NTPMillis(rs.getLong("ntp_time"));
+		builder.deviceMillis(rs.getLong("device_time"));
 
-			builder.acceleration(rs.getDouble("accel_x"), rs.getDouble("accel_y"), rs.getDouble("accel_z"));
-			builder.accelerationResolution(rs.getDouble("accel_res"));
-			builder.location(rs.getDouble("latitude"), rs.getDouble("longitude"), rs.getDouble("altitude"));
-			builder.locationResolution(rs.getDouble("location_res"));
-			builder.geomagneticField(rs.getDouble("geomag_x"), rs.getDouble("geomag_y"), rs.getDouble("geomag_z"));
-			builder.geomagneticFieldResolution(rs.getDouble("geomag_res"));
-			builder.userCoordinates(rs.getDouble("coord_x"), rs.getDouble("coord_y"));
-			builder.mapId(rs.getInt("map_id"));
-			builder.projectId(rs.getInt("project_id"));
-			builder.wifiScanId(rs.getLong("wifi_scan_id"));
-			builder.MACAddress(rs.getString("MAC_ADDRESS"));
+		builder.acceleration(rs.getDouble("accel_x"), rs.getDouble("accel_y"), rs.getDouble("accel_z"));
+		builder.accelerationResolution(rs.getDouble("accel_res"));
+		builder.location(rs.getDouble("latitude"), rs.getDouble("longitude"), rs.getDouble("altitude"));
+		builder.locationResolution(rs.getDouble("location_res"));
+		builder.geomagneticField(rs.getDouble("geomag_x"), rs.getDouble("geomag_y"), rs.getDouble("geomag_z"));
+		builder.geomagneticFieldResolution(rs.getDouble("geomag_res"));
+		builder.userCoordinates(rs.getDouble("coord_x"), rs.getDouble("coord_y"));
+		builder.mapId(rs.getInt("map_id"));
+		builder.projectId(rs.getInt("project_id"));
+		builder.wifiScanId(rs.getLong("wifi_scan_id"));
+		builder.MACAddress(rs.getString("MAC_ADDRESS"));
 
-			return builder.build();
-		}
+		return builder.build();
 	};
 
 	@Autowired
@@ -54,7 +52,7 @@ public class ScanJDBCDAO implements ScanDAO {
 	}
 
 	public int saveScan(Scan scan) {
-		final Map<String, Object> args = new HashMap<String, Object>();
+		final Map<String, Object> args = new HashMap<>();
 		args.put("latitude", scan.getLatitude());
 		args.put("longitude", scan.getLongitude());
 		args.put("altitude", scan.getAltitude());
