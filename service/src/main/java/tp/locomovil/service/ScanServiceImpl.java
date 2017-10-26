@@ -44,7 +44,7 @@ public class ScanServiceImpl implements ScanService {
 			net = neuralNetDAO.createNetworkForAPs(scan.getProjectId(), scan.getMapId(), wifis);
 
 		net.train(Collections.singletonList(scan));
-		neuralNetDAO.saveNetwork(net);
+		neuralNetDAO.updateNetworkWithId(scan.getMapId(), net);
 
 		// TODO: hay que chequear que el scan pertenezca a algún mapa y proyecto existentes, no dejar que explote
 		int wifiId = scanDAO.saveScan(scan);

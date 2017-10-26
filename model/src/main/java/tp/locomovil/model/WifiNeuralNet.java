@@ -29,10 +29,10 @@ public class WifiNeuralNet {
 	private final MultiLayerNetwork network;
 
 	// TODO: Al archivo de configuracion
-	private static int SEED = 123;
+	private static final int SEED = 123;
 	private static final int MAX_COINCIDENCES = 5;
 	private static final int STRONGEST_AP_NUMBER = 5;
-	private static int inHidden1 = 50;
+	private static final int inHidden1 = 50;
 
 	// Lower level is stronger so this sorts signals from strongest to weakest
 	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o1.getLevel() - o2.getLevel();

@@ -63,12 +63,29 @@ public class LocationController {
 		Location approximateLocation = locationService.getLocationByProjectKNNAverage(queryScan,  K);
 		long end = System.currentTimeMillis();
 
+		LOGGER.info("Finished getLocationByProject in: {} millis", end - start);
 		if (approximateLocation == null)
 			return Response.status(Response.Status.NOT_FOUND).build();
 
-		LOGGER.info("Finished getLocationByProject in: {} millis", end - start);
 		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
 	}
 
+
+	@POST
+	@Path("/neuralNet")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getLocationWithNeuralNets(final FormScan f) {
+		Scan queryScan = f.toScan();
+
+		long start = System.currentTimeMillis();
+		Location approximateLocation = locationService.getLocationMultiLayer(queryScan);
+		long end = System.currentTimeMillis();
+
+		LOGGER.info("Finished getLocationWithNeuralNets in: {} millis", end - start);
+		if (approximateLocation == null)
+			return Response.status(Response.Status.NOT_FOUND).build();
+
+		return Response.ok().entity(new LocationDTO(approximateLocation)).build();
+	}
 
 }

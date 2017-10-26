@@ -23,8 +23,8 @@ public class LocationNetsDAO implements NeuralNetDAO {
 
 	private final JdbcTemplate jdbcTemplate;
 	private final NamedParameterJdbcTemplate namedJdbcTemplate;
-	private final SimpleJdbcInsert bssidInsert;
-	private final SimpleJdbcInsert networkBytesInsert;
+	private final SimpleJdbcInsert netBSSIDInsert;
+	private final SimpleJdbcInsert netDataInsert;
 
 	@Autowired
 	private MapDAO mapDAO;
@@ -36,12 +36,11 @@ public class LocationNetsDAO implements NeuralNetDAO {
 	public LocationNetsDAO (DataSource ds) {
 		jdbcTemplate = new JdbcTemplate(ds);
 		namedJdbcTemplate = new NamedParameterJdbcTemplate(ds);
-		networkBytesInsert = new SimpleJdbcInsert(jdbcTemplate)
-				.withTableName("nets_data");
-		bssidInsert = new SimpleJdbcInsert(jdbcTemplate)
-				.withTableName("neural_nets")
+		netDataInsert = new SimpleJdbcInsert(jdbcTemplate)
+				.withTableName("nets_data")
 				.usingGeneratedKeyColumns("network_id");
-
+		netBSSIDInsert = new SimpleJdbcInsert(jdbcTemplate)
+				.withTableName("neural_nets");
 	}
 
 	private final static RowMapper<WifiNeuralNet> ROW_MAPPER = (RowMapper<WifiNeuralNet>) (rs, rowNum) -> {
@@ -59,30 +58,29 @@ public class LocationNetsDAO implements NeuralNetDAO {
 		// FIXME: feo
 		final List<WifiNeuralNet> result = namedJdbcTemplate.query("SELECT * FROM "
 				+ "neural_nets NATURAL JOIN nets_data NATURAL JOIN maps NATURAL JOIN projects "
-				+ "GROUP BY NETWORK_ID HAVING BSSID IN (:aps)", paramMap, ROW_MAPPER);
+				+ "GROUP BY NETWORK_ID HAVING (:aps) IN neural_nets.BSSID", paramMap, ROW_MAPPER);
 
 		return result.isEmpty() ? null : result.get(0);
 	}
 
 	@Override
 	public WifiNeuralNet createNetworkForAPs (final int projectId, final int mapId, List<WifiData> APs) {
+		// TODO: chequear project y map existentes
 		Project project = projectDAO.getProjectById(projectId);
 		SMap map = mapDAO.getMapById(projectId, mapId);
-		if (map == null)
-			throw new IllegalArgumentException(); // TODO: Hacer bien
 
 		WifiNeuralNet net = WifiNeuralNet.newNet(project.getName(), map.getMapName());
 
 		Map<String, Object> bytesArgs = new HashMap<>();
 		bytesArgs.put("map_id", mapId);
 		bytesArgs.put("network_data", net.getBytes());
-		long id = (long) networkBytesInsert.executeAndReturnKey(bytesArgs);
+		long id = (long) netDataInsert.executeAndReturnKey(bytesArgs);
 
-		for (WifiData wifi: APs) {
+		for (WifiData ap: APs) {
 			Map<String, Object> args = new HashMap<>();
-			args.put("bssid", wifi.getBSSID());
+			args.put("bssid", ap.getBSSID());
 			args.put("network_id", id);
-			bssidInsert.execute(args);
+			netBSSIDInsert.execute(args);
 		}
 
 		return net;
@@ -90,9 +88,9 @@ public class LocationNetsDAO implements NeuralNetDAO {
 
 	@Override
 	public WifiNeuralNet updateNetworkWithId (int id, WifiNeuralNet net) {
-		String SQL = "update nets_data set network_data = ? where network_id = ?";
-		jdbcTemplate.update(SQL, net.getBytes(), id);
-		return getNetworkWithId(id);
+		jdbcTemplate.update("update nets_data set network_data = ? where network_id = ?",
+				net.getBytes(), id);
+		return getNetworkWithId(id); // o retornar net? Debería ser lo mismo
 	}
 
 	private WifiNeuralNet getNetworkWithId (int id) {
