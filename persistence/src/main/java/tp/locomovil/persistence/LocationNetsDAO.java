@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 import tp.locomovil.inter.dao.MapDAO;
 import tp.locomovil.inter.dao.NeuralNetDAO;
 import tp.locomovil.inter.dao.ProjectDAO;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+@Repository
 public class LocationNetsDAO implements NeuralNetDAO {
 
 	private final JdbcTemplate jdbcTemplate;
@@ -44,7 +45,7 @@ public class LocationNetsDAO implements NeuralNetDAO {
 	}
 
 	private final static RowMapper<WifiNeuralNet> ROW_MAPPER = (RowMapper<WifiNeuralNet>) (rs, rowNum) -> {
-		byte[] data = rs.getBytes("nets_data.network_data");
+		byte[] data = rs.getBytes("network_data");
 		return WifiNeuralNet.fromBytes(rs.getString("projects.name"), rs.getString("maps.name"), data);
 	};
 
@@ -54,11 +55,15 @@ public class LocationNetsDAO implements NeuralNetDAO {
 
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("aps", apBSSID);
+		paramMap.put("ap_count", apBSSID.size());
 
-		// FIXME: feo
-		final List<WifiNeuralNet> result = namedJdbcTemplate.query("SELECT * FROM "
-				+ "neural_nets NATURAL JOIN nets_data NATURAL JOIN maps NATURAL JOIN projects "
-				+ "GROUP BY NETWORK_ID HAVING (:aps) IN neural_nets.BSSID", paramMap, ROW_MAPPER);
+		final List<WifiNeuralNet> result = namedJdbcTemplate.query(
+				"SELECT * FROM projects JOIN maps ON projects.project_id = maps.project_id "
+				+ "NATURAL JOIN (select * from nets_data NATURAL JOIN (SELECT NETWORK_ID FROM "
+				+ "neural_nets WHERE bssid IN (:aps) "
+				+ "GROUP BY network_id HAVING COUNT(*) = :ap_count) net_id) nets"
+				, paramMap, ROW_MAPPER);
+
 
 		return result.isEmpty() ? null : result.get(0);
 	}

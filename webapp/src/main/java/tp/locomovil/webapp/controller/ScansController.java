@@ -23,21 +23,6 @@ public class ScansController {
 	@Context
 	private UriInfo uriContext;
 
-// SI lo necesitamos
-//	@GET
-//	@Path("/{id}")
-//	public Response getScansByLocation(@PathParam("id") long mapId,
-//		@NotNull @QueryParam("x_coord") double xCoord,
-//		@NotNull @QueryParam("y_coord") double yCoord) {
-//		final Location l = new Location(xCoord, yCoord);
-//		final List<Scan> scans = scanService.getScansForLocation(mapId, l);
-//
-//		if (scans.isEmpty())
-//			return Response.status(NOT_FOUND).build();
-//
-//		return Response.ok(new ScanListDTO(scans)).build();
-//	}
-
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response postScan(final FormScan f) {

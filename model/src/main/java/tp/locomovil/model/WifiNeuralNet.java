@@ -58,20 +58,23 @@ public class WifiNeuralNet {
 				.seed(SEED)
 				.iterations(1)
 				.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-				.learningRate(0.3)
+				.learningRate(0.5)
 				.updater(Updater.NESTEROVS)
+				.weightInit(WeightInit.XAVIER)
+				.activation(Activation.RELU)
 				.list()
 				.layer(0, new DenseLayer.Builder()
 						.nIn(STRONGEST_AP_NUMBER)
 						.nOut(inHidden1)
-						.weightInit(WeightInit.DISTRIBUTION)
-						.activation(Activation.RELU)
 						.build())
-				.layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+				.layer(1, new DenseLayer.Builder()
 						.nIn(inHidden1)
-						.nOut(2)
-						.weightInit(WeightInit.XAVIER)
-						.activation(Activation.SOFTMAX)
+						.nOut(inHidden1)
+						.build())
+				.layer(2, new OutputLayer.Builder()
+						.nIn(inHidden1)
+						.nOut(2) // x, y
+						.activation(Activation.RELU)
 						.build())
 				.pretrain(false).backprop(true).build();
 
@@ -102,16 +105,16 @@ public class WifiNeuralNet {
 
 	public Location getLocationForWifis(List<WifiData> wifis) {
 		INDArray out = network.output(createNetInputs(wifis));
-		double x = out.getDouble(0), y = out.getDouble(1); // TODO: poner en "tamaño real"
-		// O se puede cambiar el contrato y devolver valores de 0 a 1, que despues se encargue otro de
-		// traducirlo a valor real
+		double x = out.getDouble(0), y = out.getDouble(1);
+		// TODO: poner en "tamaño real" - creo que no es necesario porque uso función de activación RELU
+		// en la capa de output
 		return new Location(projectName, mapName, "TODO - PLACEHOLDER", x, y, 10.50);
 	}
 
 	public byte[] getBytes() {
-		ByteArrayOutputStream os = new ByteArrayOutputStream(16000); // TODO: size conf
+		ByteArrayOutputStream os = new ByteArrayOutputStream(64000); // TODO: size conf
 		try {
-			ModelSerializer.writeModel(network, os, true); // TODO: que es true?
+			ModelSerializer.writeModel(network, os, false);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -122,8 +125,13 @@ public class WifiNeuralNet {
 	private static INDArray createNetInputs (List<WifiData> APs) {
 		double features[] = new double[APs.size()];
 		for (int i = 0; i < APs.size(); i++)
-			features[i] = APs.get(0).getLevel(); // TODO: normalizar y eso
+			features[i] = getNetInputValueFromLevel(APs.get(0).getLevel());
 		return Nd4j.create(features);
+	}
+
+	private static double getNetInputValueFromLevel (double level) {
+		// Para poner un número positivo, a nivel más alto, mas fuerte la señal del input.
+		return 100 + level;
 	}
 
 	private static INDArray createNetExpectedOutputs (double x, double y) {

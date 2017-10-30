@@ -7,6 +7,8 @@
     <packaging>pom</packaging>
     <name>root-locomovil</name>
 
+
+
     <modules>
         <module>webapp</module>
         <module>persistence</module>
@@ -42,6 +44,7 @@
         <logback.version>1.1.2</logback.version>
         <logback-ext-spring.version>0.1.1</logback-ext-spring.version>
         <dl4j.core.version>0.9.1</dl4j.core.version>
+        <nd4j.version>0.9.1</nd4j.version>
     </properties>
 
     <build>
@@ -312,6 +315,11 @@
                 <groupId>org.deeplearning4j</groupId>
                 <artifactId>deeplearning4j-core</artifactId>
                 <version>${dl4j.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.nd4j</groupId>
+                <artifactId>nd4j-cuda-7.5</artifactId>
+                <version>${nd4j.version}</version>
             </dependency>
 
         </dependencies>
