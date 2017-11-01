@@ -96,7 +96,7 @@ public class LocationNetsDAO implements NeuralNetDAO {
 	public WifiNeuralNet updateNetworkWithId (int id, WifiNeuralNet net) {
 		jdbcTemplate.update("update nets_data set network_data = ? where network_id = ?",
 				net.getBytes(), id);
-		return getNetworkWithId(id); // o retornar net? Debería ser lo mismo
+		return net;
 	}
 
 	private WifiNeuralNet getNetworkWithId (int id) {

@@ -48,8 +48,8 @@ public class LocationServiceImpl implements LocationService {
 	private static final int MAX_COINCIDENCES = 5;
 	private static final int STRONGEST_AP_NUMBER = 5;
 
-	// Lower level is stronger so this sorts signals from strongest to weakest
-	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o1.getLevel() - o2.getLevel();
+	// De mayor a menor
+	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o2.getLevel() - o1.getLevel();
 
 	@Override
 	public Location getLocationByMapKNNAverage (Scan queryScan, int K) {
@@ -67,13 +67,7 @@ public class LocationServiceImpl implements LocationService {
 	public Location getLocationMultiLayer (Scan queryScan) {
 		List<WifiData> wifis = queryScan.getWifis();
 		wifis = wifis.stream().sorted(LEVEL_SORT).limit(STRONGEST_AP_NUMBER).collect(Collectors.toList());
-		return getLocationMultiLayer(wifis);
-	}
-
-	// Mock -> sin neural nets
-	private Location getLocationMultiLayer(List<WifiData> strongestAPs) {
-		Scan mockScan = new Scan.ScanDataBuilder().wifis(strongestAPs).build();
-		return getLocationByMapKNNAverage(mockScan, 4);
+		return getLocationMultiLayerNeural(wifis);
 	}
 
 	private Location getLocationMultiLayerNeural(List<WifiData> strongestAPs) {

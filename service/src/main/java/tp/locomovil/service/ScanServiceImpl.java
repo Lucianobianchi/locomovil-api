@@ -31,6 +31,7 @@ public class ScanServiceImpl implements ScanService {
 	@Autowired
 	private NeuralNetDAO neuralNetDAO;
 
+	// TODO: es raro que se repite esto del LEVEL_SORT en varios lugares.
 	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o2.getLevel() - o1.getLevel();
 
 	private static final int MAX_COINCIDENCES = 5;
