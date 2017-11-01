@@ -34,8 +34,8 @@ public class WifiNeuralNet {
 	private static final int STRONGEST_AP_NUMBER = 5;
 	private static final int inHidden1 = 50;
 
-	// Lower level is stronger so this sorts signals from strongest to weakest
-	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o1.getLevel() - o2.getLevel();
+	// De mayor a menor
+	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o2.getLevel() - o1.getLevel();
 
 	private WifiNeuralNet (String projectName, String mapName, MultiLayerNetwork net) {
 		this.projectName = projectName;
@@ -111,9 +111,12 @@ public class WifiNeuralNet {
 	}
 
 	private static INDArray createNetInputs (List<WifiData> APs) {
-		double features[] = new double[APs.size()];
-		for (int i = 0; i < APs.size(); i++)
-			features[i] = getNetInputValueFromLevel(APs.get(0).getLevel());
+		double features[] = new double[STRONGEST_AP_NUMBER];
+		for (int i = 0; i < STRONGEST_AP_NUMBER; i++)
+			if (i < APs.size())
+				features[i] = getNetInputValueFromLevel(APs.get(0).getLevel());
+			else
+				features[i] = 0;
 		return Nd4j.create(features);
 	}
 

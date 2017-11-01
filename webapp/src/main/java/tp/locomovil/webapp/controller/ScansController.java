@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tp.locomovil.inter.service.ScanService;
 import tp.locomovil.model.Scan;
+import tp.locomovil.webapp.dto.ScanDTO;
 import tp.locomovil.webapp.forms.FormScan;
 
 import javax.ws.rs.*;
@@ -28,7 +29,7 @@ public class ScansController {
 	public Response postScan(final FormScan f) {
 		Scan s = scanService.saveScan(f.toScan());
 
-		return Response.ok().entity(s).build();
+		return Response.ok().entity(new ScanDTO(s)).build();
 	}
 
 

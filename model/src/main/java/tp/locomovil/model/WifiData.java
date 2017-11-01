@@ -1,6 +1,6 @@
 package tp.locomovil.model;
 
-public class WifiData implements Comparable {
+public class WifiData {
 
 	private String BSSID;
 	private Integer level, frequency;
@@ -23,8 +23,21 @@ public class WifiData implements Comparable {
 		return frequency;
 	}
 
-	public int compareTo (Object o) {
-		return BSSID.compareTo(((WifiData) o).getBSSID());
+
+	//TODO: sacar, es para no hacer el DTO por vago
+	public WifiData() {
+	}
+
+	public void setBSSID (String BSSID) {
+		this.BSSID = BSSID;
+	}
+
+	public void setLevel (Integer level) {
+		this.level = level;
+	}
+
+	public void setFrequency (Integer frequency) {
+		this.frequency = frequency;
 	}
 
 	@Override

@@ -31,7 +31,8 @@ public class ScanServiceImpl implements ScanService {
 	@Autowired
 	private NeuralNetDAO neuralNetDAO;
 
-	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o1.getLevel() - o2.getLevel();
+	private static final Comparator<WifiData> LEVEL_SORT = (o1, o2) -> o2.getLevel() - o1.getLevel();
+
 	private static final int MAX_COINCIDENCES = 5;
 	private static final int STRONGEST_AP_NUMBER = 5;
 
