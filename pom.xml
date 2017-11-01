@@ -45,6 +45,7 @@
         <logback-ext-spring.version>0.1.1</logback-ext-spring.version>
         <dl4j.core.version>0.9.1</dl4j.core.version>
         <nd4j.version>0.9.1</nd4j.version>
+        <apachecommons.version>3.5</apachecommons.version>
     </properties>
 
     <build>
@@ -318,8 +319,13 @@
             </dependency>
             <dependency>
                 <groupId>org.nd4j</groupId>
-                <artifactId>nd4j-cuda-7.5</artifactId>
+                <artifactId>nd4j-native</artifactId>
                 <version>${nd4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apachecommons.version}</version>
             </dependency>
 
         </dependencies>

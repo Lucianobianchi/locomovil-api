@@ -1,6 +1,7 @@
 package tp.locomovil.model;
 
 
+import com.sun.org.apache.xpath.internal.operations.Mult;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -10,15 +11,14 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.util.ModelSerializer;
+import org.deeplearning4j.util.SerializationUtils;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,13 +44,8 @@ public class WifiNeuralNet {
 	}
 
 	public static WifiNeuralNet fromBytes(String projectName, String mapName, byte[] data) {
-		try {
-			MultiLayerNetwork net = ModelSerializer.restoreMultiLayerNetwork(new ByteArrayInputStream(data));
-			return new WifiNeuralNet(projectName, mapName, net);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+		MultiLayerNetwork net = SerializationUtils.readObject(new ByteArrayInputStream(data));
+		return new WifiNeuralNet(projectName, mapName, net);
 	}
 
 	public static WifiNeuralNet newNet(String projectName, String mapName) {
@@ -112,14 +107,7 @@ public class WifiNeuralNet {
 	}
 
 	public byte[] getBytes() {
-		ByteArrayOutputStream os = new ByteArrayOutputStream(64000); // TODO: size conf
-		try {
-			ModelSerializer.writeModel(network, os, false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-		return os.toByteArray();
+		return SerializationUtils.toByteArray(network);
 	}
 
 	private static INDArray createNetInputs (List<WifiData> APs) {

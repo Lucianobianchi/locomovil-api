@@ -46,7 +46,7 @@ public class LocationNetsDAO implements NeuralNetDAO {
 
 	private final static RowMapper<WifiNeuralNet> ROW_MAPPER = (RowMapper<WifiNeuralNet>) (rs, rowNum) -> {
 		byte[] data = rs.getBytes("network_data");
-		return WifiNeuralNet.fromBytes(rs.getString("projects.name"), rs.getString("maps.name"), data);
+		return WifiNeuralNet.fromBytes(rs.getString("project_name"), rs.getString("map_name"), data);
 	};
 
 	@Override
@@ -58,7 +58,8 @@ public class LocationNetsDAO implements NeuralNetDAO {
 		paramMap.put("ap_count", apBSSID.size());
 
 		final List<WifiNeuralNet> result = namedJdbcTemplate.query(
-				"SELECT * FROM projects JOIN maps ON projects.project_id = maps.project_id "
+				"SELECT projects.name as project_name, maps.name as map_name, network_data "
+				+ "FROM projects JOIN maps ON projects.project_id = maps.project_id "
 				+ "NATURAL JOIN (select * from nets_data NATURAL JOIN (SELECT NETWORK_ID FROM "
 				+ "neural_nets WHERE bssid IN (:aps) "
 				+ "GROUP BY network_id HAVING COUNT(*) = :ap_count) net_id) nets"
@@ -79,7 +80,7 @@ public class LocationNetsDAO implements NeuralNetDAO {
 		Map<String, Object> bytesArgs = new HashMap<>();
 		bytesArgs.put("map_id", mapId);
 		bytesArgs.put("network_data", net.getBytes());
-		long id = (long) netDataInsert.executeAndReturnKey(bytesArgs);
+		long id = netDataInsert.executeAndReturnKey(bytesArgs).longValue();
 
 		for (WifiData ap: APs) {
 			Map<String, Object> args = new HashMap<>();
