@@ -3,16 +3,16 @@ package tp.locomovil.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 public class Location {
-	private double XCoordinate;
+	private final double XCoordinate;
 
-	private double YCoordinate;
+	private final double YCoordinate;
 
-	private double precision;
+	private final double precision;
 
-	private String projectName;
-	private String mapName;
+	private final String projectName;
+	private final String mapName;
 
-	private String MACAddress;
+	private final String MACAddress;
 
 	public Location (String projectName,
 			String mapName, String macAddress, double XCoordinate, double YCoordinate, double precision) {

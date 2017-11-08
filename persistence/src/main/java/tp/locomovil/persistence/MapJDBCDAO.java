@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Repository
 public class MapJDBCDAO implements MapDAO {
-	private JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert jdbcInsert;
 
 	private final static RowMapper<SMap> ROW_MAPPER =
@@ -57,7 +57,6 @@ public class MapJDBCDAO implements MapDAO {
 	}
 
 	public List<SMap> getMapsByProjectId (long projectId) {
-		final List<SMap> result = jdbcTemplate.query("SELECT * FROM maps WHERE project_id = ?", ROW_MAPPER, projectId);
-		return result;
+		return jdbcTemplate.query("SELECT * FROM maps WHERE project_id = ?", ROW_MAPPER, projectId);
 	}
 }

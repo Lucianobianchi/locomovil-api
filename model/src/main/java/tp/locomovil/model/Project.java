@@ -2,8 +2,8 @@ package tp.locomovil.model;
 
 public class Project {
 
-	private String name;
-	private long id;
+	private final String name;
+	private final long id;
 
 	public Project (String name, long id) {
 		this.name = name;

@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Repository
 public class ProjectJDBCDAO implements ProjectDAO {
-	private JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert jdbcInsert;
 
 	private final static RowMapper<Project> ROW_MAPPER =

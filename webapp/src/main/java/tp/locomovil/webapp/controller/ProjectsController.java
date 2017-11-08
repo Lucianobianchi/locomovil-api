@@ -39,16 +39,10 @@ public class ProjectsController {
 		final String name = project.getName();
 
 		Project existingProject = projectMapService.saveProject(name);
-		if (existingProject != null) {
-			List<SMap> maps = projectMapService.getMapsInProject(existingProject.getId());
-			return Response.ok(uriContext.getBaseUri())
-					.entity(new ProjectDTO(existingProject, maps, uriContext.getBaseUri())).build();
-		}
 
-		Project newProject = projectMapService.saveProject(name);
-
-		ProjectDTO pDTO = new ProjectDTO(newProject, new ArrayList<>(), uriContext.getBaseUri());
-		return Response.created(pDTO.getUri()).entity(pDTO).build();
+		List<SMap> maps = projectMapService.getMapsInProject(existingProject.getId());
+		return Response.ok(uriContext.getBaseUri())
+				.entity(new ProjectDTO(existingProject, maps, uriContext.getBaseUri())).build();
 	}
 
 	@GET
@@ -61,7 +55,6 @@ public class ProjectsController {
 		}
 		else {
 			List<SMap> maps = projectMapService.getMapsInProject(p.getId());
-			// FIXME no devuelve la URL del mapa bien porque no pone projectID en el path.
 			return Response.ok(new ProjectDTO(p, maps, uriContext.getBaseUri())).build();
 		}
 	}

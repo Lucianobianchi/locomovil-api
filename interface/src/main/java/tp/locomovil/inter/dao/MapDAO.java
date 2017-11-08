@@ -14,4 +14,5 @@ public interface MapDAO {
 	SMap getMapByName (long projectId, String name);
 
 	List<SMap> getMapsByProjectId (long projectId);
+
 }

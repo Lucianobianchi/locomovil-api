@@ -1,10 +1,5 @@
 package tp.locomovil.service;
 
-import org.deeplearning4j.nn.api.NeuralNetwork;
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.deeplearning4j.util.ModelSerializer;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +12,6 @@ import tp.locomovil.model.Scan;
 import tp.locomovil.model.WifiData;
 import tp.locomovil.model.WifiNeuralNet;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,16 +60,16 @@ public class LocationServiceImpl implements LocationService {
 	public Location getLocationMultiLayer (Scan queryScan) {
 		List<WifiData> wifis = queryScan.getWifis();
 		wifis = wifis.stream().sorted(LEVEL_SORT).limit(STRONGEST_AP_NUMBER).collect(Collectors.toList());
-		return getLocationMultiLayerNeural(wifis);
+		return getLocationMultiLayer(wifis);
 	}
 
-	private Location getLocationMultiLayerNeural(List<WifiData> strongestAPs) {
+	private Location getLocationMultiLayer (List<WifiData> strongestAPs) {
 		// Si con los N mas fuertes no hay ninguna red, pruebo con N-1.
 		for (int i = strongestAPs.size(); i > 0; i--) {
 			List<WifiData> wifis = strongestAPs.subList(0, i);
-			WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(strongestAPs);
+			WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(wifis);
 			if (net != null)
-				return net.getLocationForWifis(strongestAPs);
+				return net.getLocationForWifis(wifis);
 		}
 		return null;
 	}
@@ -86,7 +79,9 @@ public class LocationServiceImpl implements LocationService {
 		if (calibrationScans.isEmpty())
 			return null;
 
-		int maxCoincidences = 0;
+		int currentMaxCoincidences = 0;
+
+		// PriorityQueue, se insertan ordenados.
 		PriorityQueue<DistanceScanPair> scanDistances = new PriorityQueue<>();
 		List<WifiData> queryWifis = queryScan.getWifis();
 		queryWifis.sort(LEVEL_SORT);
@@ -100,6 +95,8 @@ public class LocationServiceImpl implements LocationService {
 
 			for (WifiData calibrationWifi: calibrationSorted) {
 				int index = queryWifis.indexOf(calibrationWifi);
+
+				// Se fija si algun APs de la calibración también esta en los de la query.
 				if (index >= 0) {
 					coincidences++;
 					distance += getDistance(queryWifis.get(index), calibrationWifi);
@@ -108,10 +105,10 @@ public class LocationServiceImpl implements LocationService {
 					break;
 			}
 
-			if (coincidences == maxCoincidences) {
+			if (coincidences == currentMaxCoincidences) {
 				scanDistances.add(new DistanceScanPair(distance, calibrationScan));
-			} else if (coincidences > maxCoincidences) {
-				maxCoincidences = coincidences;
+			} else if (coincidences > currentMaxCoincidences) {
+				currentMaxCoincidences = coincidences;
 				scanDistances.clear();
 				scanDistances.add(new DistanceScanPair(distance, calibrationScan));
 			}
@@ -122,18 +119,9 @@ public class LocationServiceImpl implements LocationService {
 		String mapName = mapDAO.getMapById(first.getProjectId(), first.getMapId()).getMapName();
 
 		// Calculate average position between K closest points
-		double x = 0, y = 0;
-		int sumCount = 0;
-		List<Scan> nearestScans = new LinkedList<>();
-		for (int i = 0; i < K && !scanDistances.isEmpty(); i++) {
-			Scan s = scanDistances.poll().scan;
-			nearestScans.add(s);
-			x += s.getUserCoordX();
-			y += s.getUserCoordY();
-			sumCount++;
-		}
-		x /= sumCount;
-		y /= sumCount;
+		List<Scan> nearestScans = scanDistances.stream().map(sd -> sd.scan).limit(K).collect(Collectors.toList());
+		double x = nearestScans.stream().collect(Collectors.averagingDouble(Scan::getUserCoordX));
+		double y = nearestScans.stream().collect(Collectors.averagingDouble(Scan::getUserCoordY));
 
 		// precision = distance between estimated position and the farthest point from the K nearest ones
 		double precision = getFarthestDistanceFrom(x, y, nearestScans);
@@ -156,8 +144,8 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	private static class DistanceScanPair implements Comparable<DistanceScanPair>{
-		double distance;
-		Scan scan;
+		final double distance;
+		final Scan scan;
 
 		public DistanceScanPair (double distance, Scan scan) {
 			this.distance = distance;

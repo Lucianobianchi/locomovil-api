@@ -38,6 +38,10 @@ public class ScanServiceImpl implements ScanService {
 	private static final int STRONGEST_AP_NUMBER = 5;
 
 	public Scan saveScan(Scan scan) {
+		SMap m = mapDAO.getMapById(scan.getProjectId(), scan.getMapId());
+		if (m == null)
+			return null;
+
 		List<WifiData> wifis = scan.getWifis().stream()
 				.sorted(LEVEL_SORT).limit(STRONGEST_AP_NUMBER).collect(Collectors.toList());
 
@@ -48,7 +52,6 @@ public class ScanServiceImpl implements ScanService {
 		net.train(Collections.singletonList(scan));
 		neuralNetDAO.updateNetworkWithId(scan.getMapId(), net);
 
-		// TODO: hay que chequear que el scan pertenezca a algún mapa y proyecto existentes, no dejar que explote
 		int wifiId = scanDAO.saveScan(scan);
 
 		for (WifiData w: scan.getWifis()) {

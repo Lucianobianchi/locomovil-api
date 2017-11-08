@@ -38,6 +38,7 @@ public class LocationController {
 	public Response getLocationByMapKNNAverage(final FormScan f, @QueryParam("K") int K) {
 		if (K < 1)
 			return Response.status(Response.Status.BAD_REQUEST).build();
+
 		Scan queryScan = f.toScan();
 
 		long start = System.currentTimeMillis();
@@ -55,12 +56,10 @@ public class LocationController {
 	@Path("/project")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getLocationByProject(final FormScan f) {
-		// TODO: pedir queryparam K
-		int K = 4;
 		Scan queryScan = f.toScan();
 
 		long start = System.currentTimeMillis();
-		Location approximateLocation = locationService.getLocationByProjectKNNAverage(queryScan,  K);
+		Location approximateLocation = locationService.getLocationByProjectKNNAverage(queryScan,  1);
 		long end = System.currentTimeMillis();
 
 		LOGGER.info("Finished getLocationByProject in: {} millis", end - start);

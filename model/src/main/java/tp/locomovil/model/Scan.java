@@ -4,27 +4,38 @@ import java.util.List;
 
 public class Scan {
 
-	private Double userCoordX, userCoordY;
+	private final Double userCoordX;
+	private final Double userCoordY;
 
-	private float[] rotationMatrix;
+	private final float[] rotationMatrix;
 
-	private Double geomagneticX, geomagneticY, geomagneticZ, geomagneticResolution,
-		accelerationX, accelerationY, accelerationZ, accelerationResolution,
-		latitude, longitude, altitude, locationResolution;
+	private final Double geomagneticX;
+	private final Double geomagneticY;
+	private final Double geomagneticZ;
+	private final Double geomagneticResolution;
+	private final Double accelerationX;
+	private final Double accelerationY;
+	private final Double accelerationZ;
+	private final Double accelerationResolution;
+	private final Double latitude;
+	private final Double longitude;
+	private final Double altitude;
+	private final Double locationResolution;
 
-	private Long deviceMillis, NTPMillis;
+	private final Long deviceMillis;
+	private final Long NTPMillis;
 
-	private Integer mapId;
+	private final Integer mapId;
 
-	private Integer projectId;
+	private final Integer projectId;
 
 	private List<WifiData> wifis;
 
-	private Long wifiScanId;
+	private final Long wifiScanId;
 
-	private String MACAddress;
+	private final String MACAddress;
 
-	private String deviceName;
+	private final String deviceName;
 
 	private Scan (ScanDataBuilder builder) {
 		// Geomagnetic Field

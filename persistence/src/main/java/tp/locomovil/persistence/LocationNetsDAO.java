@@ -71,9 +71,11 @@ public class LocationNetsDAO implements NeuralNetDAO {
 
 	@Override
 	public WifiNeuralNet createNetworkForAPs (final int projectId, final int mapId, List<WifiData> APs) {
-		// TODO: chequear project y map existentes
 		Project project = projectDAO.getProjectById(projectId);
 		SMap map = mapDAO.getMapById(projectId, mapId);
+
+		if (map == null)
+			return null;
 
 		WifiNeuralNet net = WifiNeuralNet.newNet(project.getName(), map.getMapName());
 

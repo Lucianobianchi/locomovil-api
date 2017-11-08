@@ -19,7 +19,7 @@ import java.util.Map;
 @Repository
 public class ScanJDBCDAO implements ScanDAO {
 
-	private JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert jdbcInsert;
 
 	private final static RowMapper<Scan> ROW_MAPPER = (rs, rowNum) -> {
@@ -89,7 +89,7 @@ public class ScanJDBCDAO implements ScanDAO {
 	}
 
 	public List<Scan> getScansByLocation(long mapId, Location location) { // La precisión la "calcula" el service
-		final long precision = 10; // TODO: calculo inteligente de la precisión. (?)
+		double precision = location.getPrecision();
 		return jdbcTemplate.query("SELECT * FROM scans "
 				+ "WHERE map_id = ? AND abs(coord_x - ?) < ? AND abs(coord_y - ?) < ?;",
 				ROW_MAPPER, mapId, location.XCoordinate(), precision, location.YCoordinate(), precision);

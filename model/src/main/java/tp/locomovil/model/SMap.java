@@ -2,9 +2,9 @@ package tp.locomovil.model;
 
 
 public class SMap {
-	String mapName;
+	final String mapName;
 
-	long mapId;
+	final long mapId;
 
 	public SMap (String mapName, long mapId) {
 		this.mapName = mapName;

@@ -101,7 +101,7 @@ public class WifiNeuralNet {
 	public Location getLocationForWifis(List<WifiData> wifis) {
 		INDArray out = network.output(createNetInputs(wifis));
 		double x = out.getDouble(0), y = out.getDouble(1);
-		// TODO: poner en "tamaño real" - creo que no es necesario porque uso función de activación RELU
+		// TODO: poner en "tamaño real"
 		// en la capa de output
 		return new Location(projectName, mapName, "TODO - PLACEHOLDER", x, y, 10.50);
 	}

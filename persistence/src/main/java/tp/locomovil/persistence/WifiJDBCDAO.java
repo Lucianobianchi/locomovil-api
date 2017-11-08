@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Repository
 public class WifiJDBCDAO implements WifiDAO {
-	private JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 
 	private final SimpleJdbcInsert jdbcInsert;
 
