@@ -48,6 +48,13 @@ public class WifiNeuralNet {
 		return new WifiNeuralNet(projectName, mapName, net);
 	}
 
+	/**
+	 * Creates a new instance of a neural net which contains the name of the project
+	 * and map to which it belongs.
+	 * @param projectName name of the project.
+	 * @param mapName name of the map.
+	 * @return the new instance.
+	 */
 	public static WifiNeuralNet newNet(String projectName, String mapName) {
 		MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
 				.seed(SEED)
@@ -87,6 +94,10 @@ public class WifiNeuralNet {
 		return mapName;
 	}
 
+	/**
+	 * Fits the neural net according to the APs present in {@code scans}.
+	 * @param scans the scans used for training. {@code scans.getWifis()} must not be null.
+	 */
 	public void train(List<Scan> scans) {
 		for (Scan s: scans) {
 			double x = s.getUserCoordX(), y = s.getUserCoordY();
@@ -98,6 +109,11 @@ public class WifiNeuralNet {
 		}
 	}
 
+	/**
+	 * Predicts a location based on the trained net with a list of nearby APs as input.
+	 * @param wifis nearby APs.
+	 * @return predicted location.
+	 */
 	public Location getLocationForWifis(List<WifiData> wifis) {
 		INDArray out = network.output(createNetInputs(wifis));
 		double x = out.getDouble(0), y = out.getDouble(1);

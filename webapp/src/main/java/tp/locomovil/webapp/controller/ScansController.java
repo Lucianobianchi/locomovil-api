@@ -24,6 +24,10 @@ public class ScansController {
 	@Context
 	private UriInfo uriContext;
 
+	/**
+	 * Saves a new scan in the database. See {@code FormScan}.
+	 * @param f Scan to save
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response postScan(final FormScan f) {

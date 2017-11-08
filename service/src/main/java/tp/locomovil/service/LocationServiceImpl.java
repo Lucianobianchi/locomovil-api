@@ -56,6 +56,13 @@ public class LocationServiceImpl implements LocationService {
 		return getLocationKNNAverage(queryScan, calibrationScans, K);
 	}
 
+	/**
+	 * An algorithm to get the user location. Given a current scan of nearby APs, the function
+	 * returns a location that is predicted using a multilayer neural network.
+	 * The network is selected according to the 5 strongest APs detected.
+	 * @param queryScan Current scan by the user, to get the APs intensities to use as input for the network.
+	 * @return The approximate location. Returns null if {@param calibrationScans} is empty.
+	 */
 	@Override
 	public Location getLocationMultiLayer (Scan queryScan) {
 		List<WifiData> wifis = queryScan.getWifis();
@@ -74,6 +81,17 @@ public class LocationServiceImpl implements LocationService {
 		return null;
 	}
 
+	/**
+	 * An algorithm to get the user location. Given a list of scans (that happened during calibration)
+	 * and a current scan to compare against the calibration, the function returns a location that
+	 * is the average of K-Nearest-Neighbour scans. Due to the nature of this technique, this
+	 * algorithm only works when using calibration scans of a certain map, it would not make sense
+	 * to calculate averages between scans in different maps.
+	 * @param K The amount of different calibrations to be averaged to get the approximate coordinates.
+	 * @param queryScan Current scan by the user, to compare against calibrations.
+	 * @param calibrationScans List of scans gathered during calibration.
+	 * @return The approximate location. Returns null if {@param calibrationScans} is empty.
+	 */
 	private Location getLocationKNNAverage (Scan queryScan,
 			List<Scan> calibrationScans, int K) {
 		if (calibrationScans.isEmpty())
