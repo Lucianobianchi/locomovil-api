@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// Usando DL4J
 public class WifiNeuralNet {
 	private final String projectName;
 	private final String mapName;

@@ -39,24 +39,28 @@ public class ScanServiceImpl implements ScanService {
 
 	public Scan saveScan(Scan scan) {
 		SMap m = mapDAO.getMapById(scan.getProjectId(), scan.getMapId());
-		if (m == null)
+		if (m == null) // Si el mapa no existe retorna null.
 			return null;
 
-		List<WifiData> wifis = scan.getWifis().stream()
-				.sorted(LEVEL_SORT).limit(STRONGEST_AP_NUMBER).collect(Collectors.toList());
-
-		WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(wifis);
-		if (net == null)
-			net = neuralNetDAO.createNetworkForAPs(scan.getProjectId(), scan.getMapId(), wifis);
-
-		net.train(Collections.singletonList(scan));
-		neuralNetDAO.updateNetworkWithId(scan.getMapId(), net);
-
+		// Guardado en base de datos normal
 		int wifiId = scanDAO.saveScan(scan);
 
 		for (WifiData w: scan.getWifis()) {
 			wifiDAO.saveWifiData(wifiId, w);
 		}
+
+		// Redes neuronales
+		List<WifiData> wifis = scan.getWifis().stream()
+				.sorted(LEVEL_SORT).limit(STRONGEST_AP_NUMBER).collect(Collectors.toList());
+
+		WifiNeuralNet net = neuralNetDAO.getNetworkForAPs(wifis);
+		if (net == null) // Crea una nueva
+			net = neuralNetDAO.createNetworkForAPs(scan.getProjectId(), scan.getMapId(), wifis);
+
+		// Entrena una existente
+		net.train(Collections.singletonList(scan));
+		neuralNetDAO.updateNetworkWithId(scan.getMapId(), net);
+
 
 		return scan;
 	}
